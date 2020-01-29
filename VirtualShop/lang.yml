@@ -1,0 +1,12 @@
+prefix: "&8[&fExample&8]"
+
+categories_title: '&9Kategoriler'
+items_title: '&9Market'
+
+closedSell: ' &cBu eşyayadan satma kapatıldı!'
+closedBuy: ' &cBu eşyayadan alma kapatıldı!'
+successBuy: ' &2{ITEM} &aadlı eşyadan &2{MONEY} &akarşılığında &2{STACK} &atane aldınız!'
+successSell: ' &2{ITEM} &aadlı eşyadan &2{MONEY} &akarşılığında &2{STACK} &atane sattınız!'
+notEnoughMoney: ' &cBunu alabilmek için yeterli paraya sahip değilsin!'
+notEnoughItem: ' &cSatabilmek için gerekli miktarda eşyaya sahip değilsin!'
+noPermission: ' &cBu komudu kullanmak için gerekli yetkiye sahip değilsin!'
