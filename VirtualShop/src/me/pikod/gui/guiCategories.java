@@ -11,26 +11,17 @@ import me.pikod.main.VirtualShop;
 
 public class guiCategories extends guiManager {
 	public guiCategories(Player player) {
-		this.create(VirtualShop.shops.getInt("categoryMenuSize"), Color.chat(guiErisim.categories_title), "categories");
+		this.create(VirtualShop.shops.getInt("categoryMenuSize"), Color.chat(guiErisim.getStr("categories_title")), "categories");
 		for(int i = 0; i < this.getInventory().getSize(); i++) {
 			if(VirtualShop.shops.getConfigurationSection("categories."+i) != null) {
-				if(VirtualShop.shops.getConfigurationSection("categories."+i).getBoolean("decoration")) {
-					ItemStack item = new ItemStack(Material.STAINED_GLASS_PANE);
-					item.setDurability((short) 15);
-					ItemMeta meta = item.getItemMeta();
-					meta.setDisplayName(Color.chat("&r"));
-					item.setItemMeta(meta);
-					this.getInventory().setItem(i, item);
-				}else {
-					@SuppressWarnings("deprecation")
-					Material m = Material.getMaterial(VirtualShop.shops.getConfigurationSection("categories."+i).getInt("item"));
-					ItemStack item = new ItemStack(m, 1);
-					ItemMeta meta = item.getItemMeta();
-					meta.setDisplayName(Color.chat(VirtualShop.shops.getConfigurationSection("categories."+i).getString("displayName")));
-					item.setItemMeta(meta);
-					item.setDurability((short) VirtualShop.shops.getConfigurationSection("categories."+i).getInt("subID"));
-					this.getInventory().setItem(i, item);
-				}
+				@SuppressWarnings("deprecation")
+				Material m = Material.getMaterial(VirtualShop.shops.getConfigurationSection("categories."+i).getInt("item"));
+				ItemStack item = new ItemStack(m, 1);
+				ItemMeta meta = item.getItemMeta();
+				meta.setDisplayName(Color.chat(VirtualShop.shops.getConfigurationSection("categories."+i).getString("displayName")));
+				item.setItemMeta(meta);
+				item.setDurability((short) VirtualShop.shops.getConfigurationSection("categories."+i).getInt("subID"));
+				this.getInventory().setItem(i, item);
 			}
 		}
 		

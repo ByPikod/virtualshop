@@ -17,7 +17,7 @@ public class guiEditCategory extends guiManager {
 		
 		@SuppressWarnings("deprecation")
 		ItemStack item = new ItemStack(Material.getMaterial(VirtualShop.shops.getConfigurationSection("categories."+categorySlot).getInt("item")), 1);
-		item.setDurability((short) VirtualShop.shops.getConfigurationSection("categories."+categorySlot).getInt("subId"));
+		item.setDurability((short) VirtualShop.shops.getInt("categories."+categorySlot+".subID"));
 		ItemMeta meta = item.getItemMeta();
 		meta.setDisplayName(Color.chat(VirtualShop.shops.getString("categories."+categorySlot+".displayName")));
 		
@@ -62,6 +62,26 @@ public class guiEditCategory extends guiManager {
 		esyaSayisi.setItemMeta(meta);
 		
 		this.setItem(5, esyaSayisi);
+		ItemStack decoration = new ItemStack(Material.STAINED_GLASS_PANE);
+		if(VirtualShop.shops.getBoolean("categories."+categorySlot+".decoration")) {
+			decoration.setDurability((short) 5);
+		}else {
+			decoration.setDurability((short) 14);
+		}
+		
+		meta = decoration.getItemMeta();
+		meta.setDisplayName(Color.chat("&7Dekorasyon Modu"));
+		lore.clear();
+		if(VirtualShop.shops.getBoolean("categories."+categorySlot+".decoration")) {
+			lore.add(Color.chat("&aAçýk"));
+		}else {
+			lore.add(Color.chat("&cKapalý"));
+		}
+		
+		meta.setLore(lore);
+		decoration.setItemMeta(meta);	
+		
+		this.setItem(7, decoration);
 		
 		ItemStack geri = new ItemStack(Material.BARRIER);
 		meta = geri.getItemMeta();

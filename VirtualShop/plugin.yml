@@ -10,20 +10,13 @@ commands:
         descreption: Yönetim Panelini açar
         aliases: [vs]
         usage: /vs
-        permission: virtualShop.manage
     market:
         descreption: Marketi açar
         aliases: [shop]
         usage: /market
-        permission: virtualShop.shop
 permissions:
-    virtualshop.*:
-        descreption: Tüm virtualShop yetkileri
-        children:
-            virtualShop.manage: true
-            virtualShop.shop: true
     virtualshop.manage:
-        descreption: VS menü açma yetkisi.
+        descreption: Admin menü açma yetkisi.
     virtualShop.shop:
         descreption: Market menüsünü açma yetkisi
         default: true

@@ -3,6 +3,7 @@ package me.pikod.listener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,7 @@ import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -44,9 +46,21 @@ public class ActionHandler implements Listener {
 	
 	
 	
+	@EventHandler
+	public void onJoin(PlayerJoinEvent event) {
+		if(event.getPlayer().hasPermission("virtualshop.manage")) {
+			if(VirtualShop.uc.hasUpdate) {
+				event.getPlayer().sendMessage(Color.chat(guiErisim.prefix+" &9VirtualShop güncellemeler buldu!\nhttps://www.spigotmc.org/resources/74496 Adresinden yeni versiyonu indirebilirsiniz!"));
+			}
+		}
+	}
+	
 	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void handler(InventoryClickEvent event) {
+		if(VirtualShop.debugMode) {
+			event.getWhoClicked().sendMessage(event.getAction().toString()+":"+event.getRawSlot()+" - Normal slot: "+event.getSlot()+" Slot type: "+event.getSlotType().toString());
+		}
 		Player player = (Player) event.getWhoClicked();
 		
 		if(event.getInventory().getName().equals(Color.chat(guiErisim.admin_menu))) { //ANA ADMIN MENUSU
@@ -80,58 +94,13 @@ public class ActionHandler implements Listener {
 				return;
 			}
 			
-			if(event.getAction().toString().substring(0, 5).equals("PLACE")) {
-				
-				if(event.getCursor().getTypeId() == 160 && event.getCursor().getDurability() == 15) {
-					event.setCancelled(true);
-					
-					ItemStack item = event.getCursor();
-					item.setAmount(1);
-					ItemMeta meta;
-					meta = item.getItemMeta();
-					meta.setDisplayName(Color.chat("&r"));
-					List<String> lore = new ArrayList<String>();
-					lore.add(Color.chat("Kaldýrmak için týklayýn!"));
-					meta.setLore(lore);
-					item.setItemMeta(meta);
-					event.getInventory().setItem(event.getRawSlot(), item);
-					event.setCursor(null);
-					
-					VirtualShop.shops.createSection("categories."+event.getSlot());
-					VirtualShop.shops.set("categories."+event.getSlot()+".decoration", true);
-					
-					try {
-						VirtualShop.shops.save(new File(VirtualShop.plugin.getDataFolder(), "shops.yml"));
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					
-					VirtualShop.reloadShops();
-					return;
-				}
-				
+			if(event.getAction().toString().substring(0, 5).equals("PLACE")) {				
 				if(!event.getCursor().getItemMeta().hasDisplayName()) {
 					event.setCancelled(true);
 					player.closeInventory();
 					player.sendMessage(Color.chat(guiErisim.prefix+" &cEþyaya bir isim belirlemelisiniz!"));
 					return;
 				}
-				
-				for(int i = 0; i < event.getInventory().getSize(); i++) {
-					if(VirtualShop.shops.getConfigurationSection("categories."+i) != null) {
-						if(VirtualShop.shops.getConfigurationSection("categories."+i).isSet("displayName")) {
-							if(VirtualShop.shops.getConfigurationSection("categories."+i).getString("displayName").equals(Color.chat(event.getCursor().getItemMeta().getDisplayName()))) {
-								
-								event.setCancelled(true);
-								player.closeInventory();
-								player.sendMessage(Color.chat(guiErisim.prefix+" &cKategori ismi diðer kategorilerden biriyle ayný olamaz!"));
-								
-								return;
-							}
-						}	
-					}
-				}
-				
 				event.setCancelled(true);
 				ItemStack item = event.getCursor();
 				
@@ -166,21 +135,6 @@ public class ActionHandler implements Listener {
 			}else if(event.getAction().toString().substring(0, 6).equals("PICKUP")){
 				if(event.getSlotType() == SlotType.QUICKBAR) return;
 				event.setCancelled(true);
-				
-				if(VirtualShop.shops.getConfigurationSection("categories."+event.getSlot()).getBoolean("decoration")) {
-					if(event.isRightClick() || event.isLeftClick()) {
-						event.setCancelled(true);
-						VirtualShop.shops.set("categories."+event.getSlot(), null);
-						try {
-							VirtualShop.shops.save(new File(VirtualShop.plugin.getDataFolder(), "shops.yml"));
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-						VirtualShop.reloadShops();
-						event.getInventory().setItem(event.getSlot(), null);
-					}
-					return;
-				}
 				if(event.isRightClick()) {
 					new guiEditCategory(player, (short) event.getSlot());
 				}else if(event.isLeftClick()) {
@@ -213,6 +167,31 @@ public class ActionHandler implements Listener {
 				VirtualShop.reloadShops();
 				player.sendMessage(Color.chat(guiErisim.prefix+" &aBaþarýyla kaldýrýldý!"));
 				new guiCategoriesAdmin(player);
+			}
+			
+			if(event.getSlot() == 7) {
+				if(event.getCurrentItem().getItemMeta().getLore().get(0).equals(Color.chat("&aAçýk"))) {
+					VirtualShop.shops.set("categories."+slot+".decoration", false);
+					item = event.getCurrentItem();
+					ItemMeta meta =  item.getItemMeta();
+					meta.setLore(Arrays.asList(Color.chat("&cKapalý")));
+					item.setDurability((short) 14);
+					item.setItemMeta(meta);
+					event.setCurrentItem(item);
+				}else {
+					VirtualShop.shops.set("categories."+slot+".decoration", true);
+					item = event.getCurrentItem();
+					ItemMeta meta =  item.getItemMeta();
+					item.setDurability((short) 5);
+					meta.setLore(Arrays.asList(Color.chat("&aAçýk")));
+					item.setItemMeta(meta);
+					event.setCurrentItem(item);
+				}
+				try {
+					VirtualShop.shops.save(new File(VirtualShop.plugin.getDataFolder(), "shops.yml"));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}else if(event.getInventory().getName().equals(Color.chat(guiErisim.add_item))) {
 			if(event.getSlotType() == SlotType.QUICKBAR) return;
@@ -405,31 +384,21 @@ public class ActionHandler implements Listener {
 					});
 				}
 			}
-		}else if(event.getInventory().getName().equals(Color.chat(guiErisim.categories_title))) { /** CATEGORIES **/
+		}else if(event.getInventory().getName().equals(Color.chat(guiErisim.getStr("categories_title")))) { /** CATEGORIES **/
+			event.setCancelled(true);
 			if(event.getSlotType() == SlotType.QUICKBAR) return; //TOP Envanterden deðilse action döndür
 			if(event.getRawSlot()+1 > event.getInventory().getSize() || event.getRawSlot()+1 < 0) {
 				return;
 			}
-			if(!event.getAction().toString().substring(0,6).equals("PICKUP")) {
-				event.setCancelled(true);
-				return;
-			}
-			event.setCancelled(true); //Eventi düþür
 			if(VirtualShop.shops.getConfigurationSection("categories."+event.getSlot()) != null && VirtualShop.shops.getBoolean("categories."+event.getSlot()+".decoration") != true) { //Eðer basýlan item'e ait veri varsa.
 				new guiItems(player, 1, event.getSlot());
 			}
-		}else if(event.getInventory().getName().equals(Color.chat(guiErisim.items_title))) { /** IN CATEGORY **/
+		}else if(event.getInventory().getName().equals(Color.chat(guiErisim.getStr("items_title")))) { /** IN CATEGORY **/
+			event.setCancelled(true);
 			if(event.getSlotType() == SlotType.QUICKBAR) return;
 			if(event.getRawSlot()+1 > event.getInventory().getSize() || event.getRawSlot()+1 < 0) {
 				return;
 			}
-			if(!event.getAction().toString().substring(0,6).equals("PICKUP")) {
-				event.setCancelled(true);
-				return;
-			}
-			
-			event.setCancelled(true);
-			
 			/* BAKILAN KATEGORI'NIN ÖZELLIKLERINI ÇEKELIM */
 			
 			int categoryId = 0;
@@ -471,21 +440,21 @@ public class ActionHandler implements Listener {
 				
 				if(event.isLeftClick()) {
 					if(buyCost == 0) {
-						player.sendMessage(Color.chat(guiErisim.server_prefix+guiErisim.closedBuy));
+						player.sendMessage(Color.chat(guiErisim.getStr("closedBuy")));
 						return;
 					}
 					
 					double money = VirtualShop.vault.getBalance(player);
 					
 					if(money >= (double) buyCost) {
-						String message = guiErisim.successBuy;
+						String message = guiErisim.getStr("successBuy");
 						ItemStack item = new ItemStack(Material.getMaterial(shop.getInt("item")));
 						item.setAmount(shop.getInt("count"));
 						item.setDurability((short) shop.getInt("subId"));
 						message = message.replace("{ITEM}", item.getData().getItemType().toString());
 						message = message.replace("{STACK}", ""+shop.getInt("count"));
 						message = message.replace("{MONEY}", VirtualShop.numberToStr(Long.parseLong(shop.getString("buyCost"))));
-						player.sendMessage(Color.chat(guiErisim.server_prefix+message));
+						player.sendMessage(Color.chat(message));
 						
 						ItemMeta meta = item.getItemMeta();
 						if(shop.isSet("displayName")) {
@@ -511,14 +480,14 @@ public class ActionHandler implements Listener {
 						player.getInventory().addItem(item);
 						VirtualShop.vault.withdrawPlayer(player, (double) buyCost);
 					}else {
-						player.sendMessage(Color.chat(guiErisim.server_prefix+guiErisim.notEnoughMoney));
+						player.sendMessage(Color.chat(guiErisim.getStr("notEnoughMoney")));
 					}
 					
 					
 				}
 				if(event.isRightClick()) {
 					if(sellCost == 0) {
-						player.sendMessage(Color.chat(guiErisim.server_prefix+guiErisim.closedSell));
+						player.sendMessage(Color.chat(guiErisim.getStr("closedSell")));
 						return;
 					}
 					for(int i = 0; i < player.getInventory().getSize(); i++) {
@@ -560,13 +529,13 @@ public class ActionHandler implements Listener {
 										player.getInventory().setItem(i, iItem);
 									}
 									
-									String message = guiErisim.successSell;
+									String message = guiErisim.getStr("successSell");
 									ItemStack item = new ItemStack(Material.getMaterial(shop.getInt("item")), 1);
 									item.setDurability((short) shop.getInt("subId"));
 									message = message.replace("{ITEM}", item.getData().getItemType().toString());
 									message = message.replace("{STACK}", ""+shop.getInt("count"));
 									message = message.replace("{MONEY}", VirtualShop.numberToStr(Long.parseLong(shop.getString("sellCost"))));
-									player.sendMessage(Color.chat(guiErisim.server_prefix+message));
+									player.sendMessage(Color.chat(message));
 									
 									VirtualShop.vault.depositPlayer(player, sellCost);
 									return;
@@ -574,7 +543,7 @@ public class ActionHandler implements Listener {
 							}
 						}
 					}
-					player.sendMessage(Color.chat(guiErisim.server_prefix+guiErisim.notEnoughItem));
+					player.sendMessage(Color.chat(guiErisim.getStr("notEnoughtItem")));
 					
 				}
 			}

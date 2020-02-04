@@ -12,7 +12,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import me.pikod.commands.cmdMain;
 import me.pikod.commands.cmdMarket;
-import me.pikod.gui.guiErisim;
 import me.pikod.listener.ActionHandler;
 import net.milkbowl.vault.economy.Economy;
 
@@ -24,6 +23,8 @@ public class VirtualShop extends JavaPlugin {
 	public static FileConfiguration shops;
 	public static FileConfiguration lang;
 	public static Economy vault;
+	public static UpdateChecker uc;
+	public static boolean debugMode = false;
 	
 	public void vaultGet() {
 		RegisteredServiceProvider<Economy> eco = getServer().getServicesManager().getRegistration(Economy.class);
@@ -38,12 +39,12 @@ public class VirtualShop extends JavaPlugin {
 	
 	@Override
 	public void onEnable() {
+		uc = new UpdateChecker(this);
 		pmanager = new PManager(this);
 		plugin = this;
 		log = getLogger();
 		shops = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "shops.yml"));
 		lang = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "lang.yml"));
-		guiErisim.reload();
 		
 		log.info("Settings setted!");
 		
@@ -70,7 +71,6 @@ public class VirtualShop extends JavaPlugin {
 	public static void reloadShops() {
 		shops = YamlConfiguration.loadConfiguration(new File(VirtualShop.plugin.getDataFolder(), "shops.yml"));
 		lang = YamlConfiguration.loadConfiguration(new File(VirtualShop.plugin.getDataFolder(), "lang.yml"));
-		guiErisim.reload();
 		if(!shops.isSet("categoryMenuSize")) {
 			shops.set("categoryMenuSize", 4);
 			try {

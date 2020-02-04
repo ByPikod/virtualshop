@@ -44,8 +44,4 @@ public class PManager {
 	        e.printStackTrace();
 	    }
 	}
-	
-	public PManager getMe() {
-		return this;
-	}
 }

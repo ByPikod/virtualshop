@@ -16,30 +16,19 @@ public class guiCategoriesAdmin extends guiManager {
 		this.create(VirtualShop.shops.getInt("categoryMenuSize"), Color.chat(guiErisim.categories_admin_menu), "categoriesAdmin");
 		for(int i = 0; i < this.getInventory().getSize(); i++) {
 			if(VirtualShop.shops.getConfigurationSection("categories."+i) != null) {
-				if(VirtualShop.shops.getConfigurationSection("categories."+i).getBoolean("decoration")) {
-					ItemStack item = new ItemStack(Material.STAINED_GLASS_PANE);
-					item.setDurability((short) 15);
-					ItemMeta meta = item.getItemMeta();
-					List<String> lore = new ArrayList<String>();
-					lore.add(Color.chat("Kaldýrmak için týklayýn!"));
-					meta.setLore(lore);
-					meta.setDisplayName(Color.chat("&r"));
-					item.setItemMeta(meta);
-					this.getInventory().setItem(i, item);
-				}else {
-					@SuppressWarnings("deprecation")
-					Material m = Material.getMaterial(VirtualShop.shops.getConfigurationSection("categories."+i).getInt("item"));
-					ItemStack item = new ItemStack(m, 1);
-					ItemMeta meta = item.getItemMeta();
-					meta.setDisplayName(Color.chat(VirtualShop.shops.getConfigurationSection("categories."+i).getString("displayName")));
-					List<String> lore = new ArrayList<String>();
-					lore.add(Color.chat("&2Sað týk:&a Kategori kaldýrma/düzenleme"));
-					lore.add(Color.chat("&2Sol týk:&a Kategori içeriði düzenleme"));
-					meta.setLore(lore);
-					item.setItemMeta(meta);
-					item.setDurability((short) VirtualShop.shops.getConfigurationSection("categories."+i).getInt("subID"));
-					this.getInventory().setItem(i, item);
-				}
+				
+				@SuppressWarnings("deprecation")
+				Material m = Material.getMaterial(VirtualShop.shops.getConfigurationSection("categories."+i).getInt("item"));
+				ItemStack item = new ItemStack(m, 1);
+				ItemMeta meta = item.getItemMeta();
+				meta.setDisplayName(Color.chat(VirtualShop.shops.getConfigurationSection("categories."+i).getString("displayName")));
+				List<String> lore = new ArrayList<String>();
+				lore.add(Color.chat("&2Sað týk:&a Kategori kaldýrma/düzenleme"));
+				lore.add(Color.chat("&2Sol týk:&a Kategori içeriði düzenleme"));
+				meta.setLore(lore);
+				item.setItemMeta(meta);
+				item.setDurability((short) VirtualShop.shops.getConfigurationSection("categories."+i).getInt("subID"));
+				this.getInventory().setItem(i, item);
 			}
 		}
 		

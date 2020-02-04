@@ -26,7 +26,7 @@ public class cmdMain implements CommandExecutor {
 			if(sender instanceof Player) {
 				new guiAdminMain((Player) sender);
 			}else {
-				sender.sendMessage(Color.chat(guiErisim.prefix+guiErisim.noPermission));
+				sender.sendMessage(Color.chat(guiErisim.prefix+guiErisim.getStr("noPermission")));
 			}
 		}
 		return true;

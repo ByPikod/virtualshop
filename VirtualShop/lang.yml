@@ -1,12 +1,14 @@
-prefix: "&8[&fExample&8]"
-
 categories_title: '&9Kategoriler'
 items_title: '&9Market'
 
-closedSell: ' &cBu eÅŸyayadan satma kapatÄ±ldÄ±!'
-closedBuy: ' &cBu eÅŸyayadan alma kapatÄ±ldÄ±!'
-successBuy: ' &2{ITEM} &aadlÄ± eÅŸyadan &2{MONEY} &akarÅŸÄ±lÄ±ÄŸÄ±nda &2{STACK} &atane aldÄ±nÄ±z!'
-successSell: ' &2{ITEM} &aadlÄ± eÅŸyadan &2{MONEY} &akarÅŸÄ±lÄ±ÄŸÄ±nda &2{STACK} &atane sattÄ±nÄ±z!'
-notEnoughMoney: ' &cBunu alabilmek iÃ§in yeterli paraya sahip deÄŸilsin!'
-notEnoughItem: ' &cSatabilmek iÃ§in gerekli miktarda eÅŸyaya sahip deÄŸilsin!'
-noPermission: ' &cBu komudu kullanmak iÃ§in gerekli yetkiye sahip deÄŸilsin!'
+closedSell: '&cBu eşyayadan satma kapatıldı!'
+closedBuy: '&cBu eşyayadan alma kapatıldı!'
+successBuy: '&2{ITEM} &aadlı eşyadan &2{MONEY} &akarşılığında &2{STACK} &atane aldınız!'
+successSell: '&2{ITEM} &aadlı eşyadan &2{MONEY} &akarşılığında &2{STACK} &atane sattınız!'
+notEnoughMoney: '&cBunu alabilmek için yeterli paraya sahip değilsin!'
+notEnoughItem: '&cSatabilmek için gerekli miktarda eşyaya sahip değilsin!'
+noPermission: '&cBu komutu kullanmak için gerekli yetkiye sahip değilsin!'
+buyCost: '&2(Sol Tık) &aAlım: {COST}'
+sellCost: '&2(Sağ Tık) &aSatım: {COST}'
+buyClosed: '&cKapalı'
+sellClosed: '&cKapalı'

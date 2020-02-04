@@ -15,7 +15,7 @@ import me.pikod.main.VirtualShop;
 
 public class guiItems extends guiManager {
 	public guiItems(Player player, int page, int category) {
-		this.create(6, guiErisim.items_title, "items");
+		this.create(6, guiErisim.getStr("items_title"), "items");
 		
 		List<String> lore = new ArrayList<String>();
 		ItemMeta meta;
@@ -76,15 +76,15 @@ public class guiItems extends guiManager {
 				}
 				
 				if(Long.parseLong(buyCost) == 0) {
-					lore.add(Color.chat("&2(Sol Týk) &aAlým: &cKapalý"));
+					lore.add(Color.chat(guiErisim.getStr("buyCost").replace("{COST}", guiErisim.getStr("buyClosed"))));
 				}else {
-					lore.add(Color.chat("&2(Sol Týk) &aAlým: &e"+strBuy));
+					lore.add(Color.chat(guiErisim.getStr("buyCost").replace("{COST}", strBuy)));
 				}
 				
 				if(Long.parseLong(sellCost) == 0) {
-					lore.add(Color.chat("&2(Sað Týk) &aSatým: &cKapalý"));
+					lore.add(Color.chat(guiErisim.getStr("sellCost").replace("{COST}", guiErisim.getStr("sellClosed"))));
 				}else {
-					lore.add(Color.chat("&2(Sað Týk) &aSatým: &e"+strSell));
+					lore.add(Color.chat(guiErisim.getStr("sellCost").replace("{COST}", strSell)));
 				}
 				
 				meta.setLore(lore);

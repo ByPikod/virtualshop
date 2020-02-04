@@ -6,6 +6,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.pikod.gui.guiCategories;
+import me.pikod.gui.guiErisim;
+import me.pikod.main.Color;
 import me.pikod.main.VirtualShop;
 
 public class cmdMarket implements CommandExecutor {
@@ -16,9 +18,14 @@ public class cmdMarket implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if(sender instanceof Player) {
-			new guiCategories((Player) sender);
+			if(sender.hasPermission("virtualshop.shop")) {
+				new guiCategories((Player) sender);
+			}else {
+				sender.sendMessage(Color.chat(guiErisim.getStr("noPermission")));
+			}
+			
 		}else {
-			sender.sendMessage("Oops..");
+			sender.sendMessage("Bu komut sadece oyun içinden kullanýlabilir!");
 		}
 		return true;
 	}
