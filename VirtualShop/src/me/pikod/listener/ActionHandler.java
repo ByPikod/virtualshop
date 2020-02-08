@@ -50,7 +50,7 @@ public class ActionHandler implements Listener {
 	public void onJoin(PlayerJoinEvent event) {
 		if(event.getPlayer().hasPermission("virtualshop.manage")) {
 			if(VirtualShop.uc.hasUpdate) {
-				event.getPlayer().sendMessage(Color.chat(guiErisim.prefix+" &9VirtualShop güncellemeler buldu!\nhttps://www.spigotmc.org/resources/74496 Adresinden yeni versiyonu indirebilirsiniz!"));
+				event.getPlayer().sendMessage(Color.chat(guiErisim.prefix+" &cVirtualShop güncellemeler buldu!\n&7https://www.spigotmc.org/resources/74496\n&cadresinden yeni versiyonu indirebilirsiniz!"));
 			}
 		}
 	}
