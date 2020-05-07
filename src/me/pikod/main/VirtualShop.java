@@ -1,17 +1,19 @@
 package me.pikod.main;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.pikod.commands.cmdMain;
 import me.pikod.commands.cmdMarket;
+import me.pikod.functions.Color;
 import me.pikod.listener.ActionHandler;
 import net.milkbowl.vault.economy.Economy;
 
@@ -26,6 +28,7 @@ public class VirtualShop extends JavaPlugin {
 	public static UpdateChecker uc;
 	public static boolean debugMode = false;
 	
+	
 	public void vaultGet() {
 		RegisteredServiceProvider<Economy> eco = getServer().getServicesManager().getRegistration(Economy.class);
 		if(eco != null) {
@@ -39,6 +42,7 @@ public class VirtualShop extends JavaPlugin {
 	
 	@Override
 	public void onEnable() {
+		
 		uc = new UpdateChecker(this);
 		pmanager = new PManager(this);
 		plugin = this;
@@ -69,17 +73,17 @@ public class VirtualShop extends JavaPlugin {
 	}
 	
 	public static void reloadShops() {
+		if(!plugin.getDataFolder().exists()) {
+			plugin.getDataFolder().mkdirs();
+		}
+		if(!pmanager.shopConfig.exists()) {
+			pmanager.copy(plugin.getResource("shops.yml"), pmanager.shopConfig);
+		}
+		if(!pmanager.langConfig.exists()) {
+			pmanager.copy(plugin.getResource("lang.yml"), pmanager.langConfig);
+		}
 		shops = YamlConfiguration.loadConfiguration(new File(VirtualShop.plugin.getDataFolder(), "shops.yml"));
 		lang = YamlConfiguration.loadConfiguration(new File(VirtualShop.plugin.getDataFolder(), "lang.yml"));
-		if(!shops.isSet("categoryMenuSize")) {
-			shops.set("categoryMenuSize", 4);
-			try {
-				shops.save(new File(VirtualShop.plugin.getDataFolder(), "shops.yml"));
-			} catch (IOException e) {
-				
-			}
-			reloadShops();
-		}
 	}
 	
 	public static String strSade(String str) {
@@ -138,14 +142,37 @@ public class VirtualShop extends JavaPlugin {
 		if(sayi > 999) {
 			ret = ret.substring(0, ret.length()-3) + "," + ret.substring(ret.length()-3);
 		}
-		if(sayi > 999999) {
+		if(sayi > 999_999) {
 			ret = ret.substring(0, ret.length()-7) + "," + ret.substring(ret.length()-7);
 		}
-		if(sayi > 999999999) {
+		if(sayi > 999_999_999) {
 			ret = ret.substring(0, ret.length()-11) + "," + ret.substring(ret.length()-11);
 		}
-		
+		if(sayi > 999_999_999_999l) {
+			ret = ret.substring(0, ret.length()-16) + "," + ret.substring(ret.length()-16);
+		}
+		if(sayi > 999_999_999_999_999l) {
+			ret = ret.substring(0, ret.length()-23) + "," + ret.substring(ret.length()-23);
+		}
+		if(sayi > 999_999_999_999_999_999l) {
+			ret = ret.substring(0, ret.length()-31) + "," + ret.substring(ret.length()-31);
+		}
 		return ret;
 	}
-
+	
+	public enum GlassColor {
+		RED, BLUE, GREEN, BLACK, WHITE;
+	}
+	
+	public static void setStainedGlassItem(ItemStack item, int id) {
+		Material m = Material.matchMaterial("STAINED_GLASS_PANE");
+		item.setDurability((short)id);
+		item.setType(m);
+	}
+	
+	public static ItemStack getStainedGlassItem(int id) {
+		ItemStack item = new ItemStack(Material.matchMaterial("STAINED_GLASS_PANE"), 1);
+		item.setDurability((short)id);
+		return item;
+	}
 }

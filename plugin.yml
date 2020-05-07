@@ -1,22 +1,22 @@
 name: VirtualShop
 version: 1.0.3
-descreption: Sanal market plugini (Türkçe Düzenleme)
+descreption: Virtual Shop plugin (English Language).
 author: HzPikod
 softdepend: [Vault]
 main: me.pikod.main.VirtualShop
 website: https://wwww.youtube.com/pikod
 commands:
     virtualshop:
-        descreption: Yönetim Panelini açar
+        descreption: Opens admin panel
         aliases: [vs]
         usage: /vs
     market:
-        descreption: Marketi açar
+        descreption: Opens shop
         aliases: [shop]
         usage: /market
 permissions:
     virtualshop.manage:
-        descreption: Admin menü açma yetkisi.
+        descreption: Admin panel permission.
     virtualShop.shop:
-        descreption: Market menüsünü açma yetkisi
+        descreption: Shop open permission.
         default: true

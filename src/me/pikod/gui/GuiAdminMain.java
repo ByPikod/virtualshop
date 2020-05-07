@@ -8,22 +8,22 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import me.pikod.main.Color;
+import me.pikod.functions.Color;
 
-public class guiAdminMain extends guiManager {
-	public guiAdminMain(Player player) {
-		this.create(1, guiErisim.admin_menu, "adminMenu");
+public class GuiAdminMain extends GuiManager {
+	public GuiAdminMain(Player player) {
+		this.create(1, GuiLanguage.admin_menu, "adminMenu");
 		
-		ItemStack reloadPlugin = new ItemStack(Material.DIODE);
+		ItemStack reloadPlugin = new ItemStack(Material.BEACON);
 		ItemStack kagit1 = new ItemStack(Material.PAPER, 1);
 		//ItemStack kagit2 = new ItemStack(Material.PAPER, 1);
 		ItemStack categories = new ItemStack(Material.ANVIL, 1);
 		
 		ItemMeta meta = kagit1.getItemMeta();
-		meta.setDisplayName(Color.chat("&a&lPlugin Yapým Ekibi"));
+		meta.setDisplayName(Color.chat("&a&lPlugin Creators"));
 		List<String> lore = new ArrayList<>();
-		lore.add(Color.chat("&2Pikod tarafýnca yapýldý!"));
-		lore.add(Color.chat("&2Týklayarak ulaþabilirsiniz!"));
+		lore.add(Color.chat("&2Created by Pikod!"));
+		lore.add(Color.chat("&2Click for more..."));
 		meta.setLore(lore);
 		kagit1.setItemMeta(meta);
 		
@@ -36,18 +36,17 @@ public class guiAdminMain extends guiManager {
 		kagit2.setItemMeta(meta);*/
 		
 		meta = categories.getItemMeta();
-		meta.setDisplayName(Color.chat("&a&lKategori Ekle/Düzenle"));
+		meta.setDisplayName(Color.chat("&a&l[Add / Edit] Category"));
 		lore.clear();
-		lore.add(Color.chat("&2Kategori eklmeye, düzenlemeye"));
-		lore.add(Color.chat("&2yarayan menüyü açmaktadýr!"));
+		lore.add(Color.chat("&2Opens the add and"));
+		lore.add(Color.chat("&2edit categories menu!"));
 		meta.setLore(lore);
 		categories.setItemMeta(meta);
 		
 		meta = reloadPlugin.getItemMeta();
-		meta.setDisplayName(Color.chat("&c&lConfig yenile"));
+		meta.setDisplayName(Color.chat("&c&lReload"));
 		lore.clear();
-		lore.add(Color.chat("&4Config dosyalarýndaki bilgileri"));
-		lore.add(Color.chat("&4çekerek marketi günceller."));
+		lore.add(Color.chat("&4Reloads config"));
 		meta.setLore(lore);
 		reloadPlugin.setItemMeta(meta);
 		

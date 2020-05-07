@@ -10,71 +10,53 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import me.pikod.main.Color;
+import me.pikod.functions.Color;
 import me.pikod.main.VirtualShop;
 
-public class guiAddItem extends guiManager {
-	public guiAddItem(Player player, int page, int category) {
-		this.create(6, Color.chat(guiErisim.add_item), "addItem");
+public class GuiItems extends GuiManager {
+	public GuiItems(Player player, int page, int category) {
+		this.create(6, GuiLanguage.getStr("items_title"), "items");
 		
 		List<String> lore = new ArrayList<String>();
 		ItemMeta meta;
+		int maxPage = getMaxPage(category);
+		
 		if(page != 1) {
 			ItemStack geri = new ItemStack(Material.ARROW);
 			meta = geri.getItemMeta();
-			meta.setDisplayName(Color.chat("&9Önceki sayfa!"));
+			meta.setDisplayName(Color.chat(GuiLanguage.getStr("previousPage")));
 			geri.setItemMeta(meta);
 			this.setItem(45, geri);
 		}else {
 			ItemStack geri = new ItemStack(Material.BARRIER);
 			meta = geri.getItemMeta();
-			meta.setDisplayName(Color.chat("&9Ana Sayfa"));
+			meta.setDisplayName(Color.chat(GuiLanguage.getStr("mainMenu")));
 			geri.setItemMeta(meta);
 			this.setItem(45, geri);
 		}
 		
 		
-		ItemStack categoryId = new ItemStack(Material.COMPASS, 1);
-		meta = categoryId.getItemMeta();
-		meta.setDisplayName(Color.chat("&9Kategori ID"));
-		lore.clear();
-		lore.add(""+category);
-		meta.setLore(lore);
-		categoryId.setItemMeta(meta);
-		this.setItem(48, categoryId);
-		
 		ItemStack sayfa = new ItemStack(Material.PAPER, page);
 		meta = sayfa.getItemMeta();
-		meta.setDisplayName(Color.chat("&9Sayfa"));
+		meta.setDisplayName(Color.chat(GuiLanguage.getStr("page")));
+		lore.clear();
+		lore.add(Color.chat("&aCategory ID: &2"+category));
+		meta.setLore(lore);
 		sayfa.setItemMeta(meta);
 		this.setItem(49, sayfa);
-		
-		ItemStack esyaSayisi = new ItemStack(Material.CHEST, 1);
-		meta = esyaSayisi.getItemMeta();
-		meta.setDisplayName(Color.chat("&9Eþya Sayýsý"));
-		lore.clear();
-		if(VirtualShop.shops.getConfigurationSection("categories."+category+".shop") != null) {
-			lore.add(""+VirtualShop.shops.getConfigurationSection("categories."+category+".shop").getKeys(false).size());
-		}else {
-			lore.add("0");
-		}
-		meta.setLore(lore);
-		esyaSayisi.setItemMeta(meta);
-		this.setItem(50, esyaSayisi);
-		
-		ItemStack ileri = new ItemStack(Material.ARROW);
-		meta = ileri.getItemMeta();
-		meta.setDisplayName(Color.chat("&9Sonraki sayfa!"));
-		ileri.setItemMeta(meta);
-		this.setItem(53, ileri);
-		
+		if(page != maxPage) {
+			ItemStack ileri = new ItemStack(Material.ARROW);
+			meta = ileri.getItemMeta();
+			meta.setDisplayName(Color.chat(GuiLanguage.getStr("nextPages")));
+			ileri.setItemMeta(meta);
+			this.setItem(53, ileri);
+		}	
 		player.openInventory(this.getInventory());
 		
 		for(int i = (44*page)-44; i < 44*page; i++) {
 			ConfigurationSection shop = VirtualShop.shops.getConfigurationSection("categories."+category+".shop."+i);
 			if(shop != null) {
-				@SuppressWarnings("deprecation")
-				ItemStack item = new ItemStack(Material.getMaterial(shop.getInt("item")), shop.getInt("count"));
+				ItemStack item = new ItemStack(Material.matchMaterial(shop.getString("item")), shop.getInt("count"));
 				item.setDurability((short) shop.getInt("subId"));
 				meta = item.getItemMeta();
 				lore.clear();
@@ -92,37 +74,52 @@ public class guiAddItem extends guiManager {
 					meta.setLore(lore);
 				}
 				
-				lore.add(Color.chat("&2Düzenlemek için týkla!"));
 				if(Long.parseLong(buyCost) == 0) {
-					lore.add(Color.chat("&aAlým: &cKapalý"));
+					lore.add(Color.chat(GuiLanguage.getStr("buyCost").replace("{COST}", GuiLanguage.getStr("buyClosed"))));
 				}else {
-					lore.add(Color.chat("&aAlým: &e"+strBuy));
+					lore.add(Color.chat(GuiLanguage.getStr("buyCost").replace("{COST}", strBuy)));
 				}
 				
 				if(Long.parseLong(sellCost) == 0) {
-					lore.add(Color.chat("&aSatým: &cKapalý"));
+					lore.add(Color.chat(GuiLanguage.getStr("sellCost").replace("{COST}", GuiLanguage.getStr("sellClosed"))));
 				}else {
-					lore.add(Color.chat("&aSatým: &e"+strSell));
+					lore.add(Color.chat(GuiLanguage.getStr("sellCost").replace("{COST}", strSell)));
 				}
+				
+				meta.setLore(lore);
 				
 				if(shop.isSet("displayName")) {
 					meta.setDisplayName(shop.getString("displayName"));
 				}
 				
-				meta.setLore(lore);
+				
 				item.setItemMeta(meta);
 				
 				if(shop.isSet("ench")) {
 					for(String ench : shop.getConfigurationSection("ench").getKeys(false)) {
-						@SuppressWarnings("deprecation")
-						Enchantment enchObj = Enchantment.getById(Integer.parseInt(ench));
+						Enchantment enchObj = Enchantment.getByName(ench);
 						item.addUnsafeEnchantment(enchObj, shop.getInt("ench."+ench));
 					}
 				}
 				
 				this.setItem(i-((44*page)-44), item);
+				
+			}
+		}
+	}
+	
+	public static int getMaxPage(int category) {
+		ConfigurationSection categorySec = VirtualShop.shops.getConfigurationSection("categories."+category);
+		int max = 1;
+		if(!categorySec.isSet("shop")) return max;
+		for(String shop : categorySec.getConfigurationSection("shop").getKeys(false)) {
+			if(Integer.parseInt(shop) > max) {
+				max = Integer.parseInt(shop);
 			}
 		}
 		
+		return (max/44)+1;
 	}
+	
+	
 }

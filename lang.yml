@@ -1,14 +1,44 @@
-categories_title: '&9Kategoriler'
-items_title: '&9Market'
+# ------------------
+#     GUI TITLES
+# ------------------
 
-closedSell: '&cBu eþyayadan satma kapatýldý!'
-closedBuy: '&cBu eþyayadan alma kapatýldý!'
-successBuy: '&2{ITEM} &aadlý eþyadan &2{MONEY} &akarþýlýðýnda &2{STACK} &atane aldýnýz!'
-successSell: '&2{ITEM} &aadlý eþyadan &2{MONEY} &akarþýlýðýnda &2{STACK} &atane sattýnýz!'
-notEnoughMoney: '&cBunu alabilmek için yeterli paraya sahip deðilsin!'
-notEnoughItem: '&cSatabilmek için gerekli miktarda eþyaya sahip deðilsin!'
-noPermission: '&cBu komutu kullanmak için gerekli yetkiye sahip deðilsin!'
-buyCost: '&2(Sol Týk) &aAlým: {COST}'
-sellCost: '&2(Sað Týk) &aSatým: {COST}'
-buyClosed: '&cKapalý'
-sellClosed: '&cKapalý'
+categories_title: '&9Categories'
+items_title: '&9Items'
+sell_item_title: '&9Sell Item'
+buy_item_title: '&9Buy Item'
+
+# ------------------
+#      MESSAGES
+# ------------------
+closedSell: '&cThe sale of this item has been disabled.'
+closedBuy: '&cThe purchase of this items has been disabled.'
+successBuy: '&aYou bought &2{STACK}&ax &2{ITEM} &afor &2{MONEY}&a.'
+successSell: '&aYou sold &2{STACK}&ax &2{ITEM} &afor &2{MONEY}&a.'
+notEnoughMoney: '&cYou don't have enough money to buy!'
+notEnoughItem: '&cYou don't have enough items to buy!'
+noPermission: '&cYou don't have permission!'
+
+# ------------------
+#  GUI BUTTON LORES
+# ------------------
+
+# ENGLISH: You shouldn't use '&r' in buyCost
+buyCost: '&2(Left Click) &aBuy: &e{COST}'
+# ENGLISH: You shouldn't use '&r' in sellCost
+sellCost: '&2(Right Click) &aSell: &e{COST}'
+piecePrefix: '&aPiece: &l'
+totalPrefix: '&aTotal: &l'
+backToPrefix: '&cTo: &l'
+buyClosed: '&cDisabled'
+sellClosed: '&cDisabled'
+
+# ------------------
+#  GUI BUTTON NAMES
+# ------------------
+
+accept: '&9Accept'
+back: '&9Back'
+page: '&9Page'
+mainMenu: '&9Main Menu'
+previousPage: '&9Previous Page'
+nextPage: '&9Next Page'

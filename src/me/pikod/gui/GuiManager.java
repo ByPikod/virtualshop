@@ -3,9 +3,9 @@ package me.pikod.gui;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
 
-import me.pikod.main.Color;
+import me.pikod.functions.Color;
 
-public class guiManager {
+public class GuiManager {
 	private Inventory gui = null;
 	private String idName;
 	

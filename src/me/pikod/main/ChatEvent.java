@@ -1,4 +1,4 @@
-package me.pikod.gui;
+package me.pikod.main;
 
 import org.bukkit.entity.Player;
 

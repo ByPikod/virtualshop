@@ -1,10 +1,9 @@
-package me.pikod.gui;
+package me.pikod.main;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-import me.pikod.main.VirtualShop;
 import net.milkbowl.vault.economy.Economy;
 
 public class VaultUsing {

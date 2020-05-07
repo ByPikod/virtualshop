@@ -5,9 +5,9 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import me.pikod.gui.guiAdminMain;
-import me.pikod.gui.guiErisim;
-import me.pikod.main.Color;
+import me.pikod.functions.Color;
+import me.pikod.gui.GuiAdminMain;
+import me.pikod.gui.GuiLanguage;
 import me.pikod.main.VirtualShop;
 
 public class cmdMain implements CommandExecutor {
@@ -24,9 +24,9 @@ public class cmdMain implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if(sender.hasPermission("virtualshop.manage")) {
 			if(sender instanceof Player) {
-				new guiAdminMain((Player) sender);
+				new GuiAdminMain((Player) sender);
 			}else {
-				sender.sendMessage(Color.chat(guiErisim.prefix+guiErisim.getStr("noPermission")));
+				sender.sendMessage(Color.chat(GuiLanguage.prefix+GuiLanguage.getStr("noPermission")));
 			}
 		}
 		return true;

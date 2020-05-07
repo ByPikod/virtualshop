@@ -4,19 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import me.pikod.main.Color;
+import me.pikod.functions.Color;
 import me.pikod.main.VirtualShop;
 
-public class guiEditCategory extends guiManager {
-	public guiEditCategory(Player player, short categorySlot) {
-		this.create(1, guiErisim.edit_category, "editCategory");
-		
-		@SuppressWarnings("deprecation")
-		ItemStack item = new ItemStack(Material.getMaterial(VirtualShop.shops.getConfigurationSection("categories."+categorySlot).getInt("item")), 1);
+public class GuiEditCategory extends GuiManager {
+	public GuiEditCategory(Player player, short categorySlot) {
+		this.create(1, GuiLanguage.edit_category, "editCategory");
+		ConfigurationSection s = VirtualShop.shops.getConfigurationSection("categories."+categorySlot);
+		ItemStack item = new ItemStack(Material.matchMaterial(s.getString("item")), 1);
 		item.setDurability((short) VirtualShop.shops.getInt("categories."+categorySlot+".subID"));
 		ItemMeta meta = item.getItemMeta();
 		meta.setDisplayName(Color.chat(VirtualShop.shops.getString("categories."+categorySlot+".displayName")));
@@ -29,10 +29,10 @@ public class guiEditCategory extends guiManager {
 		
 		ItemStack kaldir = new ItemStack(Material.LAVA_BUCKET, 1);
 		meta = kaldir.getItemMeta();
-		meta.setDisplayName(Color.chat("&4Kategoriyi Sil"));
+		meta.setDisplayName(Color.chat("&4Delete"));
 		lore.clear();
-		lore.add(Color.chat("&cKategoriyi sonsuza"));
-		lore.add(Color.chat("&ckadar kaldýrýr!"));
+		lore.add(Color.chat("&cClick for delete"));
+		lore.add(Color.chat("&cthe category!"));
 		meta.setLore(lore);
 		kaldir.setItemMeta(meta);
 		
@@ -40,7 +40,7 @@ public class guiEditCategory extends guiManager {
 		
 		ItemStack slot = new ItemStack(Material.COMPASS, 1);
 		meta = slot.getItemMeta();
-		meta.setDisplayName(Color.chat("&aKategorinin Yeri (Slot)"));
+		meta.setDisplayName(Color.chat("&aCategory Location (Slot)"));
 		lore.clear();
 		lore.add(""+categorySlot);
 		meta.setLore(lore);
@@ -50,7 +50,7 @@ public class guiEditCategory extends guiManager {
 		
 		ItemStack esyaSayisi = new ItemStack(Material.CHEST, 1);
 		meta = esyaSayisi.getItemMeta();
-		meta.setDisplayName(Color.chat("&aKategorideki Eþya Sayýsý"));
+		meta.setDisplayName(Color.chat("&aItem Count"));
 		lore.clear();
 		if(VirtualShop.shops.getConfigurationSection("categories."+categorySlot+".shop") != null) {
 			lore.add(""+VirtualShop.shops.getConfigurationSection("categories."+categorySlot+".shop").getKeys(false).size());
@@ -62,20 +62,22 @@ public class guiEditCategory extends guiManager {
 		esyaSayisi.setItemMeta(meta);
 		
 		this.setItem(5, esyaSayisi);
-		ItemStack decoration = new ItemStack(Material.STAINED_GLASS_PANE);
+
+		ItemStack decoration;
+		
 		if(VirtualShop.shops.getBoolean("categories."+categorySlot+".decoration")) {
-			decoration.setDurability((short) 5);
+			decoration = VirtualShop.getStainedGlassItem(5);
 		}else {
-			decoration.setDurability((short) 14);
+			decoration = VirtualShop.getStainedGlassItem(14);
 		}
 		
 		meta = decoration.getItemMeta();
-		meta.setDisplayName(Color.chat("&7Dekorasyon Modu"));
+		meta.setDisplayName(Color.chat("&7Is Decoration"));
 		lore.clear();
 		if(VirtualShop.shops.getBoolean("categories."+categorySlot+".decoration")) {
-			lore.add(Color.chat("&aAçýk"));
+			lore.add(Color.chat("&aEnabled"));
 		}else {
-			lore.add(Color.chat("&cKapalý"));
+			lore.add(Color.chat("&cDisabled"));
 		}
 		
 		meta.setLore(lore);
@@ -85,10 +87,10 @@ public class guiEditCategory extends guiManager {
 		
 		ItemStack geri = new ItemStack(Material.BARRIER);
 		meta = geri.getItemMeta();
-		meta.setDisplayName(Color.chat("&4Geri dön"));
+		meta.setDisplayName(Color.chat("&4Back"));
 		lore.clear();
-		lore.add(Color.chat("&cBir önceki menüye"));
-		lore.add(Color.chat("&cdönmenizi saðlar!"));
+		lore.add(Color.chat("&cClick for back"));
+		lore.add(Color.chat("&cprevious menu!"));
 		meta.setLore(lore);
 		geri.setItemMeta(meta);	
 		

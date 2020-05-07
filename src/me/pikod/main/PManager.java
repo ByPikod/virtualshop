@@ -20,12 +20,13 @@ public class PManager {
 	}
 	
 	private void firstRun(VirtualShop plugin) throws Exception {
+		if(!plugin.getDataFolder().exists()) {
+			plugin.getDataFolder().mkdirs();
+		}
 		if(!shopConfig.exists()) {
-			shopConfig.getParentFile().mkdirs();
 			copy(plugin.getResource("shops.yml"), shopConfig);
 		}
 		if(!langConfig.exists()) {
-			langConfig.getParentFile().mkdirs();
 			copy(plugin.getResource("lang.yml"), langConfig);
 		}
 	}
