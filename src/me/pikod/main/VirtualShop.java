@@ -27,6 +27,7 @@ public class VirtualShop extends JavaPlugin {
 	public static Economy vault;
 	public static UpdateChecker uc;
 	public static boolean debugMode = false;
+	public static boolean isUpperVersion;
 	
 	
 	public void vaultGet() {
@@ -65,6 +66,14 @@ public class VirtualShop extends JavaPlugin {
 			Bukkit.getPluginManager().disablePlugin(this);
 		}
 		vaultGet();
+		
+		try {
+			if(Material.getMaterial("BLACK_STAINED_GLASS_PANE") == null) {
+				isUpperVersion = true;
+			}else isUpperVersion = false;
+		}catch(Exception e) {
+			isUpperVersion = true;
+		}
 	}
 	
 	@Override
@@ -160,19 +169,23 @@ public class VirtualShop extends JavaPlugin {
 		return ret;
 	}
 	
-	public enum GlassColor {
-		RED, BLUE, GREEN, BLACK, WHITE;
+	public static void setStainedGlassItem(ItemStack item, String color, int id) {
+		if(isUpperVersion) {
+			Material m = Material.matchMaterial(color+"_STAINED_GLASS_PANE");
+			item.setType(m);
+		}else {
+			item.setDurability((short) id);
+		}
 	}
 	
-	public static void setStainedGlassItem(ItemStack item, int id) {
-		Material m = Material.matchMaterial("STAINED_GLASS_PANE");
-		item.setDurability((short)id);
-		item.setType(m);
-	}
-	
-	public static ItemStack getStainedGlassItem(int id) {
-		ItemStack item = new ItemStack(Material.matchMaterial("STAINED_GLASS_PANE"), 1);
-		item.setDurability((short)id);
+	public static ItemStack getStainedGlassItem(String color, int id) {
+		ItemStack item;
+		if(isUpperVersion) {
+			item = new ItemStack(Material.matchMaterial(color+"STAINED_GLASS_PANE"));
+		}else {
+			item = new ItemStack(Material.matchMaterial("STAINED_GLASS_PANE"));
+			item.setDurability((short) id);
+		}
 		return item;
 	}
 }

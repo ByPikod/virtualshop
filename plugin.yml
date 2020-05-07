@@ -4,6 +4,7 @@ descreption: Virtual Shop plugin (English Language).
 author: HzPikod
 softdepend: [Vault]
 main: me.pikod.main.VirtualShop
+api-version: 1.15
 website: https://wwww.youtube.com/pikod
 commands:
     virtualshop:

@@ -15,7 +15,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -27,7 +26,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import me.pikod.functions.Color;
-import me.pikod.functions.f;
 import me.pikod.gui.GuiAddItem;
 import me.pikod.gui.GuiCategories;
 import me.pikod.gui.GuiCategoriesAdmin;
@@ -100,9 +98,8 @@ public class ActionHandler implements Listener {
 			}
 			
 			if(event.getAction() == InventoryAction.PLACE_ALL || event.getAction() == InventoryAction.PLACE_ONE || event.getAction() == InventoryAction.PLACE_SOME) {
-				ItemStack item = event.getCursor();
-				String type = item.getType().toString();
 				event.setCancelled(true);
+				ItemStack item = event.getCursor();
 				item.setAmount(1);
 				
 				ItemMeta meta;
@@ -120,7 +117,7 @@ public class ActionHandler implements Listener {
 				
 				
 				VirtualShop.shops.createSection("categories."+event.getSlot());
-				VirtualShop.shops.set("categories."+event.getSlot()+".item", type);
+				VirtualShop.shops.set("categories."+event.getSlot()+".item", item.getType().toString());
 				VirtualShop.shops.set("categories."+event.getSlot()+".displayName", meta.getDisplayName());
 				VirtualShop.shops.set("categories."+event.getSlot()+".subID", item.getDurability());
 				VirtualShop.shops.set("categories."+event.getSlot()+".meta", item.getData().getData());
@@ -171,7 +168,7 @@ public class ActionHandler implements Listener {
 			if(event.getSlot() == 7) {
 				if(event.getCurrentItem().getItemMeta().getLore().get(0).equals(Color.chat("&aEnabled"))) {
 					VirtualShop.shops.set("categories."+slot+".decoration", false);
-					item = VirtualShop.getStainedGlassItem(14);
+					item = VirtualShop.getStainedGlassItem("RED", 14);
 					ItemMeta meta =  item.getItemMeta();
 					meta.setDisplayName(Color.chat("&7Is Decoration"));
 					meta.setLore(Arrays.asList(Color.chat("&cDisabled")));
@@ -179,7 +176,7 @@ public class ActionHandler implements Listener {
 					event.getInventory().setItem(event.getSlot(), item);
 				}else {
 					VirtualShop.shops.set("categories."+slot+".decoration", true);
-					item = VirtualShop.getStainedGlassItem(5);
+					item = VirtualShop.getStainedGlassItem("LIME",5);
 					ItemMeta meta = item.getItemMeta();
 					meta.setDisplayName(Color.chat("&7Is Decoration"));
 					meta.setLore(Arrays.asList(Color.chat("&aEnabled")));

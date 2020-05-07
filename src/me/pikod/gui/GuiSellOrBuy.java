@@ -34,7 +34,7 @@ public class GuiSellOrBuy extends GuiManager {
 		this.setItem(4, item);
 		
 		
-		item = VirtualShop.getStainedGlassItem(5);
+		item = VirtualShop.getStainedGlassItem("LIME", 5);
 		item.setAmount(1);
 		meta = item.getItemMeta();
 		meta.setDisplayName(Color.chat("&a+"));
@@ -48,7 +48,7 @@ public class GuiSellOrBuy extends GuiManager {
 		item.setAmount(64);
 		this.setItem(8, item.clone());
 		
-		item = VirtualShop.getStainedGlassItem(14);
+		item = VirtualShop.getStainedGlassItem("RED", 14);
 		meta = item.getItemMeta();
 		meta.setDisplayName(Color.chat("&c-"));
 		item.setItemMeta(meta);	
@@ -60,7 +60,7 @@ public class GuiSellOrBuy extends GuiManager {
 		this.setItem(1, item.clone());
 		item.setAmount(64);
 		this.setItem(0, item.clone());
-		item = VirtualShop.getStainedGlassItem(15);
+		item = VirtualShop.getStainedGlassItem("BLACK", 15);
 		meta = item.getItemMeta();
 		meta.setDisplayName(Color.chat("&r"));
 		item.setItemMeta(meta);

@@ -17,7 +17,6 @@ public class GuiCategoriesAdmin extends GuiManager {
 		this.create(VirtualShop.shops.getInt("categoryMenuSize"), Color.chat(GuiLanguage.categories_admin_menu), "categoriesAdmin");
 		for(int i = 0; i < this.getInventory().getSize(); i++) {
 			if(VirtualShop.shops.getConfigurationSection("categories."+i) != null) {
-				
 				ConfigurationSection s = VirtualShop.shops.getConfigurationSection("categories."+i);
 				Material m = Material.matchMaterial(s.getString("item"));
 				ItemStack item = new ItemStack(m, 1);

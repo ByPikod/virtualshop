@@ -66,9 +66,9 @@ public class GuiEditCategory extends GuiManager {
 		ItemStack decoration;
 		
 		if(VirtualShop.shops.getBoolean("categories."+categorySlot+".decoration")) {
-			decoration = VirtualShop.getStainedGlassItem(5);
+			decoration = VirtualShop.getStainedGlassItem("LIME", 5);
 		}else {
-			decoration = VirtualShop.getStainedGlassItem(14);
+			decoration = VirtualShop.getStainedGlassItem("RED", 14);
 		}
 		
 		meta = decoration.getItemMeta();
