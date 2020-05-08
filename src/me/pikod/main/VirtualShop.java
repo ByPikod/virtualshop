@@ -14,6 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import me.pikod.commands.cmdMain;
 import me.pikod.commands.cmdMarket;
 import me.pikod.functions.Color;
+import me.pikod.functions.f;
 import me.pikod.listener.ActionHandler;
 import net.milkbowl.vault.economy.Economy;
 
@@ -68,11 +69,11 @@ public class VirtualShop extends JavaPlugin {
 		vaultGet();
 		
 		try {
-			if(Material.getMaterial("BLACK_STAINED_GLASS_PANE") == null) {
-				isUpperVersion = true;
-			}else isUpperVersion = false;
+			if(Material.matchMaterial("BLACK_STAINED_GLASS_PANE") == null) {
+				isUpperVersion = false;
+			}else isUpperVersion = true;
 		}catch(Exception e) {
-			isUpperVersion = true;
+			isUpperVersion = false;
 		}
 	}
 	
@@ -181,8 +182,16 @@ public class VirtualShop extends JavaPlugin {
 	public static ItemStack getStainedGlassItem(String color, int id) {
 		ItemStack item;
 		if(isUpperVersion) {
-			item = new ItemStack(Material.matchMaterial(color+"STAINED_GLASS_PANE"));
+			if(debugMode) {
+				f.bm("IS UPPER VERSION: TRUE\nCOLOR: "+color);
+			}
+			
+			item = new ItemStack(Material.matchMaterial(color+"_STAINED_GLASS_PANE"));
 		}else {
+			if(debugMode) {
+				f.bm("IS UPPER VERSION: FALSE\nCOLOR: "+color);
+			}
+			
 			item = new ItemStack(Material.matchMaterial("STAINED_GLASS_PANE"));
 			item.setDurability((short) id);
 		}

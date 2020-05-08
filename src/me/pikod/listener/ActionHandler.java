@@ -213,7 +213,7 @@ public class ActionHandler implements Listener {
 				
 				ConfigurationSection shop = VirtualShop.shops.getConfigurationSection("categories."+Integer.parseInt(event.getInventory().getItem(48).getItemMeta().getLore().get(0))+".shop."+location);
 				
-				shop.set("item", item.getType());
+				shop.set("item", item.getType().toString());
 				shop.set("subId", item.getDurability());
 				shop.set("count", item.getAmount());
 				shop.set("buyCost", "1000");
@@ -344,7 +344,13 @@ public class ActionHandler implements Listener {
 							}
 							VirtualShop.reloadShops();
 							event.getPlayer().sendMessage(Color.chat(GuiLanguage.prefix+" &aSuccessfully assigned new variable!"));
-							new GuiEditItem(player, itemId, categoryId);
+							Bukkit.getScheduler().scheduleSyncDelayedTask(VirtualShop.plugin, new Runnable() {
+								
+								@Override
+								public void run() {
+									new GuiEditItem(player, itemId, categoryId);
+								}
+							});
 							return true;
 						}
 					});
@@ -378,7 +384,13 @@ public class ActionHandler implements Listener {
 							}
 							VirtualShop.reloadShops();
 							event.getPlayer().sendMessage(Color.chat(GuiLanguage.prefix+" &aSuccessfully assigned new variable!"));
-							new GuiEditItem(player, itemId, categoryId);
+							Bukkit.getScheduler().scheduleSyncDelayedTask(VirtualShop.plugin, new Runnable() {
+								
+								@Override
+								public void run() {
+									new GuiEditItem(player, itemId, categoryId);
+								}
+							});
 							return true;
 						}
 					});

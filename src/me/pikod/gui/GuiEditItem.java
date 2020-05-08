@@ -27,7 +27,6 @@ public class GuiEditItem extends GuiManager {
 		geri.setItemMeta(meta);
 		this.setItem(0, geri);
 		
-		
 		ItemStack itemS = new ItemStack(Material.matchMaterial(VirtualShop.shops.getConfigurationSection("categories."+category+".shop."+item).getString("item")), VirtualShop.shops.getConfigurationSection("categories."+category+".shop."+item).getInt("count"));
 		meta = itemS.getItemMeta();
 		itemS.setDurability((short) VirtualShop.shops.getConfigurationSection("categories."+category+".shop."+item).getInt("subId"));
