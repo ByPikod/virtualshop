@@ -1,5 +1,5 @@
 name: VirtualShop
-version: 1.0.3
+version: 1.0.5
 descreption: Virtual Shop plugin (English Language).
 author: HzPikod
 softdepend: [Vault]
@@ -11,10 +11,10 @@ commands:
         descreption: Opens admin panel
         aliases: [vs]
         usage: /vs
-    market:
+    shop:
         descreption: Opens shop
-        aliases: [shop]
-        usage: /market
+        aliases: [shop, market]
+        usage: /shop
 permissions:
     virtualshop.manage:
         descreption: Admin panel permission.

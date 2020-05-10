@@ -47,14 +47,19 @@ public class ActionHandler implements Listener {
 	public ActionHandler(VirtualShop plugin) {
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
-	
-	
+
 	
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event) {
 		if(event.getPlayer().hasPermission("virtualshop.manage")) {
 			if(VirtualShop.uc.hasUpdate) {
-				event.getPlayer().sendMessage(Color.chat(GuiLanguage.prefix+" &cVirtualShop finded new updates! Link for update: \n&7https://www.spigotmc.org/resources/74496\n"));
+				Bukkit.getScheduler().scheduleSyncDelayedTask(VirtualShop.plugin, new Runnable() {
+					
+					@Override
+					public void run() {
+						event.getPlayer().sendMessage(Color.chat(GuiLanguage.prefix+" &cFinded new updates! Link for update: \n&7https://www.spigotmc.org/resources/74496\n"));	
+					}
+				}, 10L);
 			}
 		}
 	}
@@ -330,7 +335,6 @@ public class ActionHandler implements Listener {
 								if(event.getMessage().equals("cancel")) {
 									event.getPlayer().sendMessage(Color.chat(GuiLanguage.prefix+" &cOperation canceled!"));
 									new GuiEditItem(player, itemId, categoryId);
-									ActionHandler.listedenKaldir(player);
 									return true;
 								}
 								event.getPlayer().sendMessage(Color.chat(GuiLanguage.prefix+" &cThe input you entered is not a valid number. Please try again or cancel operation."));
@@ -370,7 +374,6 @@ public class ActionHandler implements Listener {
 								if(event.getMessage().equals("cancel")) {
 									event.getPlayer().sendMessage(Color.chat(GuiLanguage.prefix+" &cCanceled operation!"));
 									new GuiEditItem(player, itemId, categoryId);
-									ActionHandler.listedenKaldir(player);
 									return true;
 								}
 								event.getPlayer().sendMessage(Color.chat(GuiLanguage.prefix+" &cThe input you entered is not a valid number. Please try again or cancel operation."));
@@ -614,11 +617,6 @@ public class ActionHandler implements Listener {
 				}
 			}
 		}
-	}
-	
-	
-	public static void listedenKaldir(Player player) {
-		
 	}
 	
 	@EventHandler

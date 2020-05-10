@@ -14,9 +14,9 @@ closedSell: '&cThe sale of this item has been disabled.'
 closedBuy: '&cThe purchase of this items has been disabled.'
 successBuy: '&aYou bought &2{STACK}&ax &2{ITEM} &afor &2{MONEY}&a.'
 successSell: '&aYou sold &2{STACK}&ax &2{ITEM} &afor &2{MONEY}&a.'
-notEnoughMoney: '&cYou don't have enough money to buy!'
-notEnoughItem: '&cYou don't have enough items to buy!'
-noPermission: '&cYou don't have permission!'
+notEnoughMoney: '&cYou don''t have enough money to buy!'
+notEnoughItem: '&cYou don''t have enough items to sell!'
+noPermission: '&cYou don''t have permission!'
 
 # ------------------
 #  GUI BUTTON LORES

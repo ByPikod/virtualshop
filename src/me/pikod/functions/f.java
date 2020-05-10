@@ -11,7 +11,7 @@ public class f {
 	 **/
 	
 	//ChatColor
-    static public String m(String message){ return message.replaceAll("§","&"); }
+    static public String m(String message){ return message.replace("&","§"); }
     static public void pm(Player p, String message){ p.sendMessage(m(message)); }
     static public void pm(Player p, Integer message){ p.sendMessage(String.valueOf(message)); }
     static public void pm(Player p, boolean message){ p.sendMessage(String.valueOf(message)); }

@@ -12,7 +12,7 @@ import me.pikod.main.VirtualShop;
 
 public class cmdMarket implements CommandExecutor {
 	public cmdMarket(VirtualShop plugin) {
-		plugin.getCommand("market").setExecutor(this);
+		plugin.getCommand("shop").setExecutor(this);
 	}
 
 	@Override

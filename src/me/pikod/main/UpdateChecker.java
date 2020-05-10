@@ -24,10 +24,6 @@ public class UpdateChecker {
 	        }else {
 	        	hasUpdate = true;
 	        }
-	        Bukkit.broadcastMessage(plugin.getDescription().getVersion()+" new version: "+newVersion);
-	        if(hasUpdate) {
-	        	Bukkit.getLogger().info("Updates finded!");
-	        }
 		}catch(Exception er) {
 			Bukkit.getLogger().warning("&cCould not check to VirtualShop updates!");
 		}
