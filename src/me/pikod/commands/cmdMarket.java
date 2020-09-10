@@ -5,10 +5,10 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import me.pikod.functions.Color;
 import me.pikod.gui.GuiCategories;
 import me.pikod.gui.GuiLanguage;
 import me.pikod.main.VirtualShop;
+import me.pikod.utils.Color;
 
 public class cmdMarket implements CommandExecutor {
 	public cmdMarket(VirtualShop plugin) {

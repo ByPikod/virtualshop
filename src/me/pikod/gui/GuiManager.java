@@ -3,13 +3,12 @@ package me.pikod.gui;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
 
-import me.pikod.functions.Color;
+import me.pikod.utils.Color;
 
 public class GuiManager {
 	private Inventory gui = null;
-	private String idName;
 	
-	public void create(int rows, String name, String idName) {
+	public void create(int rows, String name) {
 		int slot = 9;
 		switch(rows) {
 			case 1:
@@ -36,7 +35,6 @@ public class GuiManager {
 		}
 		
 		this.gui = Bukkit.createInventory(null, slot, Color.chat(name));
-		this.idName = idName;
 	}
 	
 	//ITEM SETTINGS
@@ -45,11 +43,6 @@ public class GuiManager {
 		if(gui != null) {
 			gui.setItem(slot, item);
 		}
-	}
-	
-	
-	public String getIdName() {
-		return idName;
 	}
 	
 	public Inventory getInventory() {

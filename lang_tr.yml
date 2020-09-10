@@ -1,0 +1,217 @@
+#*****************************************************************************************#
+# --¬   --¬--¬------¬ --------¬--¬   --¬ -----¬ --¬     -------¬--¬  --¬ ------¬ ------¬  #
+# --¦   --¦--¦---==--¬L==---==---¦   --¦---==--¬--¦     ---====---¦  --¦---===--¬---==--¬ #
+# --¦   --¦--¦--------   --¦   --¦   --¦-------¦--¦     -------¬-------¦--¦   --¦-------- #
+# L--¬ ------¦---==--¬   --¦   --¦   --¦---==--¦--¦     L====--¦---==--¦--¦   --¦---===-  #
+#  L------ --¦--¦  --¦   --¦   L----------¦  --¦-------¬-------¦--¦  --¦L----------¦      #
+#   L===-  L=-L=-  L=-   L=-    L=====- L=-  L=-L======-L======-L=-  L=- L=====- L=-      #
+#   *******************************************************************************       #
+#                                                                                         #
+#                      VirtualShop RELOADED - 1.0.6v - Pikod tarafýndan                   #
+#                             https://wwww.youtube.com/c/pikod                            #
+#                                                                                         #
+#                  Bir açýklamayý silmek için config'den o bölümü kaldýr.                 #
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# ------------------
+#      MESSAGES     
+# ------------------
+closedSell: '&cBu eþyadan satamazsýn.'
+closedBuy: '&cBu eþyadan alamazsýn.'
+writeBuyAmount: '&aKaç tane almak istiyorsun? &aEðer iptal etmek istiyorsan &7"iptal" &ayazabilirsin.'
+writeSellAmount: '&aKaç tane satmak istiyorsun? &aEðer iptal etmek istiyorsan &7"iptal" &ayazabilirsin. (Tümünü satmak için,  &7"all" &ayazabilirsin.)'
+incorrectNumber: '&cHatalý bir sayý girdin.'
+successBuy: '&2{ITEM} &aadlý eþyadan &2{MONEY} &afiyatýna &2{STACK} &atane satýn aldýn.'
+successSell: '&2{ITEM} &aadlý eþyadan &2{MONEY} &afiyatýna &2{STACK} &atane sattýn.'
+notEnoughMoney: '&cBu eþyayý almak için yeterli paraya sahip deðilsin.'
+notEnoughItem: '&cSatmak istediðin eþyaya sahip deðilsin.'
+noSellableItem: '&cEnvanterinde satýlabilir hiç eþya yok.'
+emptyHand: '&cElinde bir þey tutmalýsýn.'
+dontSellable: '&cElinde ki þey satýlabilir deðil.'
+noPermission: '&cGerekli yetkilere sahip deðilsin!'
+noConsole: '&cBu komudu konsoldan kullanamazsýn.'
+correctUsage: '&cDoðru kullaným: &f{USAGE}'
+cancelKeyword: 'iptal'
+
+# ------------------------
+#  ADMIN PANEL - MESSAGES 
+# ------------------------
+
+successReloaded: '&9VirtualShop &8&l» &eEklenti yeniden baþlatýldý!'
+newUpdates: '&9VirtualShop &8&l» &cGüncellemeler bulundu! Güncellemeyi indirin: &7https://www.spigotmc.org/resources/74496'
+cannotBeAddItem: '&9VirtualShop &8&l» &cBuraya eþya ekleyemezsin!'
+successRemoved: '&9VirtualShop &8&l» &aBaþarýyla kaldýrýldý!'
+writeNewBuyCost: '&9VirtualShop &8&l» &aLütfen yeni alýþ deðerini girin! Eðer almayý kapatmak isterseniz "0" yazabilirsiniz. Ýptal etmek için "iptal" yazýn.'
+writeNewSellCost: '&9VirtualShop &8&l» &aLütfen yeni satýþ deðerini girin! Eðer satýþý kapatmak isterseniz "0" yazabilirsiniz. Ýptal etmek için "iptal" yazýn.'
+invalidNumber: '&9VirtualShop &8&l» &cHatalý bir sayý girdiniz. Tekrar deneyin veya "iptal" yazarak vazgeçin.'
+assigned: '&9VirtualShop &8&l» &aDeðer baþarýyla deðiþtirildi!'
+cancelled: '&9VirtualShop &8&l» &cVazgeçtiniz!'
+cancelKeywordAdmin: 'iptal'
+
+# ------------------
+#     GUI TITLES    
+# ------------------
+# (Birbirlerinden farklý isimlere sahip olmalýdýrlar.)
+
+categoriesTitle: '&9Kategoriler'
+itemsTitle: '&9Eþyalar'
+sellItemTitle: '&9Eþya Sat'
+buyItemTitle: '&9Eþya Al'
+
+# ------------------
+#  GUI BUTTON LORES 
+# ------------------
+
+# Items Menu
+itemLore:
+    - '&2(Sol Týk) &aAlým: &e{BUY_COST}'
+    - '&2(Sað Týk) &aSatým: &e{SELL_COST}'
+buyClosed: '&cDevredýþý'
+sellClosed: '&cDevredýþý'
+mainMenuLore:
+    - '&fAna menüye dön.'
+nextPageLore:
+    - '&fSonraki sayfaya git.'
+previousPageLore:
+    - '&fÖnceki sayfaya git.'
+
+# Sell / Buy - Menu
+piecePrefix: '&aTanesi: &e'
+totalPrefix: '&aHepsi: &e'
+backToPrefix: '&cDön: &l'
+
+# ------------------
+#  GUI BUTTON NAMES 
+# ------------------
+
+# Sell / Buy - Menu
+accept: '&4Kabul Et'
+shopMenuBack: '&4Vazgeç'
+
+# Items Menu
+back: '&9Geri Dön'
+page: '&9Sayfa'
+mainMenu: '&9Ana Menü'
+previousPage: '&9Önceki Sayfa'
+nextPage: '&9Sonraki Sayfa'
+
+# --------------------------
+#  ADMIN PANEL - GUI TITLES 
+# --------------------------
+# (Birbirlerinden farklý isimlere sahip olmalýdýrlar.)
+
+adminMainMenuTitle: '&9&lYönetici Menüsü'
+editCategoriesTitle: '&9Katagorileri Düzenle'
+editCategoryTitle: '&9Katagoriyi Düzenle'
+addItemToCategoryTitle: '&9Eþya Ekle'
+editItemTitle: '&9Eþyayý Düzenle'
+
+# --------------------------------
+#  ADMIN PANEL - GUI BUTTON LORES 
+# --------------------------------
+
+# Main Menu
+reloadLore: 
+    - '&4Eklentiyi yenilemek'
+    - '&4için týklayabilirsin.'
+categoriesLore:
+    - '&2Kategoriler menüsünü'
+    - '&2açmak için týklayabilirsin.'
+creatorsLore:
+    - '&6Pikod tarafýndan yapýldý!'
+    - '&6Daha fazla bilgi almak için týkla...'
+
+# Categories Menu
+panelCategoryLore:
+    - '&2Sað Týk:&a Katagoriyi düzenle'
+    - '&2Sol Týk:&a Kategoriye eþya ekle'
+ 
+# Add Item Menu
+panelItemLore:
+    - '&2Düzenlemek için týkla!'
+    - '&aAlýþ: &e{BUY_COST}'
+    - '&aSatýþ: &e{SELL_COST}'
+panelMainMenuLore:
+    - '&fAna menüye dön.'
+panelPreviousPageLore:
+    - '&fÖnceki sayfaya git.'
+panelNextPageLore:
+    - '&fSonraki sayfaya git.'
+panelPageLore:
+    - '&fHangi sayfa da'
+    - '&fbulunduðunu görebilirsin.'
+
+# Edit Category Menu
+decorationEnabled: '&aAktif'
+decorationDisabled: '&cDevredýþý'
+editCategory_DeleteLore:
+    - '&cKatagoriyi silmek'
+    - '&cÝçin týklayabilirsin.'
+editCategory_BackLore:
+    - '&cÖnceki sayfaya geri'
+    - '&cdönmek için týkla.'
+    
+# Add Item Menu
+panelSellClosed: '&cDevredýþý'
+panelBuyClosed: '&cDevredýþý'
+
+# Edit Item Menu
+editItem_BackLore:
+    - '&cÖnceki sayfaya geri'
+    - '&cdönmek Ýçin týkla.'
+editItem_DeleteLore:
+    - '&cKatagorideki eþyayý'
+    - '&csilmek için týkla.'
+editItem_SetBuyCost:
+    - '&cAlýþ fiyatýný'
+    - '&cayarlamak için týkla.'
+editItem_SetSellCost:
+    - '&cSatýþ fiyatýný'
+    - '&cayarlamak için týkla.'
+editItem_StackSizeLore:
+    - '&aStack Büyüklüðü: &2{STACK_SIZE}'
+    - '&aDeðiþtirmek için týkla!'
+
+# --------------------------------
+#  ADMIN PANEL - GUI BUTTON NAMES 
+# --------------------------------
+
+# Main Menu
+mainMenu_Reload: '&c&lEklentiyi Yenile'
+mainMenu_Categories: '&a&lKatagori Ekle veya Sil'
+mainMenu_Creators: '&e&lEklenti Yapýmcýsý'
+
+# Edit Category Menu
+editCategory_IsDecoration: '&7Dekorasyon Olsun'
+editCategory_Delete: '&4Sil'
+editCategory_CategoryId: '&aKatagori ID'
+editCategory_ItemCount: '&aEþya Sayýsý'
+editCategory_Back: '&4Geri Dön'
+
+# Add Item Menu
+addItem_PreviousPage: '&9Önceki Sayfa'
+addItem_NextPage: '&9Sonraki Sayfa'
+addItem_Page: '&9Sayfa'
+addItem_MainMenu: '&9Ana Menü'
+addItem_CategoryId: '&9Katagori ID'
+addItem_ItemCount: '&9Eþya Miktarý'
+
+# Edit Item Menu
+editItem_Back: '&4Geri Dön'
+editItem_Delete: '&4Sil'
+editItem_BuyCost: '&aAlýþ Fiyatý Ayarla &2({COST})'
+editItem_SellCost: '&aSatýþ Fiyatý Ayarla &2({COST})'
+editItem_SellDisabled: 'Devredýþý'
+editItem_BuyDisabled: 'Devredýþý'
+editItem_stackSize: '&7Stack Büyüklüðü'
+
+# --------------------------------
+#            HELP MENU
+# --------------------------------
+
+helpMenu:
+    - '&e--------- &lYARDIM &e---------'
+    - '&a/vs gui: &7Admin GUI''yi  aç.'
+    - '&a/vs reload: &7Eklentiyi yenile.'
+    - '&a/vs help: &7Komutlarý göster.'
+    - '&e------------------------------'

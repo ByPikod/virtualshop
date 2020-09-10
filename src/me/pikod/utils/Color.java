@@ -1,4 +1,4 @@
-package me.pikod.functions;
+package me.pikod.utils;
 
 import org.bukkit.ChatColor;
 

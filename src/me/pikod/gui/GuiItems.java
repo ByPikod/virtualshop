@@ -5,32 +5,48 @@ import java.util.List;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import me.pikod.functions.Color;
 import me.pikod.main.VirtualShop;
+import me.pikod.utils.Color;
+import me.pikod.utils.f;
 
 public class GuiItems extends GuiManager {
 	public GuiItems(Player player, int page, int category) {
-		this.create(6, GuiLanguage.getStr("items_title"), "items");
-		
+		this.create(6, f.autoLang("itemsTitle"));
 		List<String> lore = new ArrayList<String>();
 		ItemMeta meta;
 		int maxPage = getMaxPage(category);
-		
+
+		YamlConfiguration lang = VirtualShop.lang;
 		if(page != 1) {
 			ItemStack geri = new ItemStack(Material.ARROW);
 			meta = geri.getItemMeta();
-			meta.setDisplayName(Color.chat(GuiLanguage.getStr("previousPage")));
+			meta.setDisplayName(f.autoLang("previousPage"));
+			lore.clear();
+			if(lang.isSet("previousPageLore")) {
+				for(String key : lang.getStringList("previousPageLore")) {
+					lore.add(f.c(key));
+				}
+			}
+			meta.setLore(lore);
 			geri.setItemMeta(meta);
 			this.setItem(45, geri);
 		}else {
 			ItemStack geri = new ItemStack(Material.BARRIER);
 			meta = geri.getItemMeta();
-			meta.setDisplayName(Color.chat(GuiLanguage.getStr("mainMenu")));
+			meta.setDisplayName(f.autoLang("mainMenu"));
+			lore.clear();
+			if(lang.isSet("mainMenuLore")) {
+				for(String key : lang.getStringList("mainMenuLore")) {
+					lore.add(f.c(key));
+				}
+			}
+			meta.setLore(lore);
 			geri.setItemMeta(meta);
 			this.setItem(45, geri);
 		}
@@ -38,7 +54,7 @@ public class GuiItems extends GuiManager {
 		
 		ItemStack sayfa = new ItemStack(Material.PAPER, page);
 		meta = sayfa.getItemMeta();
-		meta.setDisplayName(Color.chat(GuiLanguage.getStr("page")));
+		meta.setDisplayName(f.autoLang("page"));
 		lore.clear();
 		lore.add(Color.chat("&aCategory ID: &2"+category));
 		meta.setLore(lore);
@@ -47,13 +63,24 @@ public class GuiItems extends GuiManager {
 		if(page != maxPage) {
 			ItemStack ileri = new ItemStack(Material.ARROW);
 			meta = ileri.getItemMeta();
-			meta.setDisplayName(Color.chat(GuiLanguage.getStr("nextPages")));
+			meta.setDisplayName(f.autoLang("nextPage"));
+			lore.clear();
+			if(lang.isSet("nextPageLore")) {
+				for(String key : lang.getStringList("nextPageLore")) {
+					lore.add(f.c(key));
+				}
+			}
+			meta.setLore(lore);
 			ileri.setItemMeta(meta);
 			this.setItem(53, ileri);
 		}	
-		player.openInventory(this.getInventory());
 		
-		for(int i = (44*page)-44; i < 44*page; i++) {
+		int baslangic, bitis;
+		int sizeOfPreviousPages = ((page-1) * 45);
+		baslangic = sizeOfPreviousPages+1;
+		bitis = sizeOfPreviousPages+45;
+		
+		for(int i = baslangic; i <= bitis; i++) {
 			ConfigurationSection shop = VirtualShop.shops.getConfigurationSection("categories."+category+".shop."+i);
 			if(shop != null) {
 				ItemStack item = new ItemStack(Material.matchMaterial(shop.getString("item")), shop.getInt("count"));
@@ -63,8 +90,8 @@ public class GuiItems extends GuiManager {
 				String buyCost = shop.getString("buyCost");
 				String sellCost = shop.getString("sellCost");
 				
-				String strBuy = VirtualShop.numberToStr(Long.parseLong(buyCost));
-				String strSell = VirtualShop.numberToStr(Long.parseLong(sellCost));
+				String strBuy = VirtualShop.numberToStr(Double.valueOf(buyCost));
+				String strSell = VirtualShop.numberToStr(Double.valueOf(sellCost));
 				
 				if(shop.isSet("lore")) {
 					for(String key : shop.getConfigurationSection("lore").getKeys(false)) {
@@ -74,16 +101,17 @@ public class GuiItems extends GuiManager {
 					meta.setLore(lore);
 				}
 				
-				if(Long.parseLong(buyCost) == 0) {
-					lore.add(Color.chat(GuiLanguage.getStr("buyCost").replace("{COST}", GuiLanguage.getStr("buyClosed"))));
-				}else {
-					lore.add(Color.chat(GuiLanguage.getStr("buyCost").replace("{COST}", strBuy)));
-				}
 				
-				if(Long.parseLong(sellCost) == 0) {
-					lore.add(Color.chat(GuiLanguage.getStr("sellCost").replace("{COST}", GuiLanguage.getStr("sellClosed"))));
-				}else {
-					lore.add(Color.chat(GuiLanguage.getStr("sellCost").replace("{COST}", strSell)));
+				if(strBuy.equals("0")) {
+					strBuy = f.autoLang("buyClosed");
+				}
+				if(strSell.equals("0")) {
+					strSell = f.autoLang("sellClosed");
+				}
+				if(lang.isSet("itemLore")) {
+					for(String key : lang.getStringList("itemLore")) {
+						lore.add(f.c(key.replace("{BUY_COST}", strBuy).replace("{SELL_COST}", strSell)));
+					}
 				}
 				
 				meta.setLore(lore);
@@ -102,9 +130,9 @@ public class GuiItems extends GuiManager {
 					}
 				}
 				
-				this.setItem(i-((44*page)-44), item);
-				
+				this.setItem((i-sizeOfPreviousPages)-1, item);
 			}
+			player.openInventory(this.getInventory());
 		}
 	}
 	

@@ -4,49 +4,245 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import me.pikod.functions.Color;
+import me.pikod.main.ChatEvent;
+import me.pikod.main.ChatInterface;
 import me.pikod.main.VirtualShop;
+import me.pikod.utils.Color;
+import me.pikod.utils.f;
 
 public class GuiSellOrBuy extends GuiManager {
-	public GuiSellOrBuy(Player player, boolean isBuy, ItemStack item, long cost, int categoryId, int categoryPage, ConfigurationSection itemSec) {
+	
+	private final int categoryPage;
+	private final int categoryId;
+	private final Player player;
+	
+	public GuiSellOrBuy(Player player, boolean isBuy, ItemStack item, double cost, int categoryId, int categoryPage, ConfigurationSection itemSec) {
+		this.categoryId = categoryId;
+		this.categoryPage = categoryPage;
+		this.player = player;
+		
+		if(f.autoConfig("shoppingType").toUpperCase().equals("CHAT")) {
+			player.closeInventory();
+			ItemStack verilecekItem = item.clone();
+			if(verilecekItem.hasItemMeta()) {
+				ItemMeta newMeta = verilecekItem.getItemMeta();
+				if(itemSec.isSet("lore")) {
+					List<String> lore = new ArrayList<String>();
+					for(String value : itemSec.getConfigurationSection("lore").getKeys(false)) {
+						String key = itemSec.getString("lore."+value);
+						lore.add(key);
+					}
+					newMeta.setLore(lore);
+				}else {
+					newMeta.setLore(null);
+				}
+				verilecekItem.setItemMeta(newMeta);
+			}
+			if(isBuy) {
+				new ChatEvent(player, new ChatInterface() {
+					
+					
+					@Override
+					public boolean chatAction(AsyncPlayerChatEvent event) {
+						if(event.getMessage().toLowerCase().equals(f.autoLang("cancelKeyword").toLowerCase())) {
+							back();
+							return true;
+						}
+						Player player = event.getPlayer();
+						Inventory playerInventory = player.getInventory();
+						double piece = (cost/verilecekItem.getAmount());
+						int totalAmount;
+						double money = VirtualShop.vault.getBalance(event.getPlayer());
+						try {
+							totalAmount = Integer.parseInt(event.getMessage());
+						}catch(Exception e) {
+							event.getPlayer().sendMessage(f.autoLang("incorrectNumber"));
+							back();
+							return true;
+						}
+						int amountBackup = totalAmount;
+						if(!(money >= totalAmount*piece)) {
+							event.getPlayer().sendMessage(Color.chat(GuiLanguage.getStr("notEnoughMoney")));
+							back();
+							return true;
+						}
+						VirtualShop.vault.withdrawPlayer(event.getPlayer(), totalAmount*piece);
+						int stackSize = 64;
+						if(itemSec.isSet("stackSize")) stackSize = itemSec.getInt("stackSize");
+						while(totalAmount > stackSize) {
+							totalAmount -= stackSize;
+							verilecekItem.setAmount(stackSize);
+							playerInventory.addItem(verilecekItem);
+						}
+						if(totalAmount != 0) {
+							verilecekItem.setAmount(totalAmount);
+							playerInventory.addItem(verilecekItem);
+						}
+						String msg = Color.chat(GuiLanguage.getStr("successBuy"));
+						msg = msg.replace("{ITEM}", verilecekItem.getType().toString());
+						msg = msg.replace("{MONEY}", String.valueOf(VirtualShop.numberToStr((long) (totalAmount*piece))));
+						msg = msg.replace("{STACK}", String.valueOf(amountBackup));
+						event.getPlayer().sendMessage(msg);
+						back();
+						return true;
+					}
+				});
+				player.sendMessage(f.c(f.autoLang("writeBuyAmount")));
+			}else {
+				new ChatEvent(player, new ChatInterface() {
+					
+					
+					@Override
+					public boolean chatAction(AsyncPlayerChatEvent event) {
+						if(event.getMessage().toLowerCase().equals(f.autoLang("cancelKeyword").toLowerCase())) {
+							back();
+							return true;
+						}
+						ItemMeta correctMeta = verilecekItem.getItemMeta();
+						Player player = event.getPlayer();
+						Inventory playerInventory = player.getInventory();
+						int selled = 0;
+						double piece = (cost/verilecekItem.getAmount());
+						int totalAmount;
+						try {
+							totalAmount = Integer.parseInt(event.getMessage());
+						}catch(Exception e) {
+							if(event.getMessage().toUpperCase().equals("ALL")) {
+								totalAmount = 1000000;
+							}else {
+								event.getPlayer().sendMessage(f.autoLang("incorrectNumber"));
+								back();
+								return true;
+							}
+						}
+						for(int i = 0; i < playerInventory.getSize(); i++) {
+							if(playerInventory.getItem(i) == null) continue;
+							ItemStack itemTry = playerInventory.getItem(i);
+							ItemMeta tryMeta = itemTry.getItemMeta();
+							boolean uyusuyor = true;
+							
+							if(!itemTry.getType().equals(verilecekItem.getType())) continue;
+							if(itemTry.getDurability() != verilecekItem.getDurability()) continue;
+							if(!itemTry.getData().equals(verilecekItem.getData())) continue;
+							if(correctMeta.hasDisplayName()) {
+								if(tryMeta.hasDisplayName())
+									uyusuyor = (correctMeta.getDisplayName().equals(tryMeta.getDisplayName())); else uyusuyor = false;
+							} else if(tryMeta.hasDisplayName()) continue;
+							if(!uyusuyor) continue;
+							if(correctMeta.hasLore()) {
+								if(tryMeta.hasLore()){
+									int x = 0;
+									for(String str : correctMeta.getLore()) {
+										String str2 = tryMeta.getLore().get(x);
+										if(!str.equals(str2)) {
+											continue;
+										}
+										x++;
+									}
+								}else continue;
+							} else if(tryMeta.hasLore()) continue;
+								
+							if(correctMeta.hasEnchants()) {
+								if(tryMeta.hasEnchants()) 
+									uyusuyor = (tryMeta.getEnchants().equals(correctMeta.getEnchants())); else uyusuyor = false;
+							}else if(tryMeta.hasEnchants()) continue;
+							if(!uyusuyor) continue;
+							if(totalAmount-itemTry.getAmount() >= 0) {
+								totalAmount -= itemTry.getAmount();
+								selled += itemTry.getAmount();
+								playerInventory.setItem(i, null);
+							}else {
+								int var1 = itemTry.getAmount()-totalAmount;
+								itemTry.setAmount(var1);
+								selled += totalAmount;
+								totalAmount = 0;
+							}
+						}
+						if(selled == 0) {
+							event.getPlayer().sendMessage(Color.chat(GuiLanguage.getStr("notEnoughItem")));
+						}else {
+							double m = selled*piece;
+							VirtualShop.vault.depositPlayer(event.getPlayer(), m);
+							String msg = Color.chat(GuiLanguage.getStr("successSell"));
+							msg = msg.replace("{ITEM}", verilecekItem.getType().toString());
+							msg = msg.replace("{MONEY}", VirtualShop.numberToStr((long) m));
+							msg = msg.replace("{STACK}", String.valueOf(selled));
+							event.getPlayer().sendMessage(msg);
+						}
+						back();
+						return true;
+					}
+				});
+				player.sendMessage(f.c(f.autoLang("writeSellAmount")));
+			}
+			return;
+		}
+		
 		if(isBuy) {
-			this.create(3, GuiLanguage.getStr("buy_item_title"), "buyItem");
+			this.create(3, GuiLanguage.getStr("buyItemTitle"));
 		}else {
-			this.create(3, GuiLanguage.getStr("sell_item_title"), "sellItem");
+			this.create(3, GuiLanguage.getStr("sellItemTitle"));
 		}
 		ItemStack anaItem = item.clone();
 		int itemAdet = item.getAmount();
-		long itemCost = cost / itemAdet;
+		double itemCost = cost / itemAdet;
 		item.setAmount(1);
 		ItemMeta meta = item.getItemMeta();
 		List<String> lore = new ArrayList<String>();
-		lore.add(Color.chat(GuiLanguage.getStr("piecePrefix")+itemCost));
-		lore.add(Color.chat(GuiLanguage.getStr("totalPrefix")+VirtualShop.numberToStr(itemCost)));
+		if(itemSec.isSet("lore")) {
+			for(String keys : itemSec.getConfigurationSection("lore").getKeys(false)) {
+				lore.add(f.c(itemSec.getString("lore."+keys)));
+			}
+			lore.add(f.c("&r"));
+		}
+		lore.add(Color.chat(GuiLanguage.getStr("piecePrefix")+VirtualShop.numberToStr(((int) itemCost))));
+		lore.add(Color.chat(GuiLanguage.getStr("totalPrefix")+VirtualShop.numberToStr((long) (itemCost))));
 		meta.setLore(lore);
 		item.setItemMeta(meta);
 		this.setItem(4, item);
 		
+		int stackSize = 64;
+		if(itemSec.isSet("stackSize")) stackSize = itemSec.getInt("stackSize");
 		
 		item = VirtualShop.getStainedGlassItem("LIME", 5);
 		item.setAmount(1);
 		meta = item.getItemMeta();
+		ItemMeta m = item.getItemMeta();
+		m.setDisplayName(" ");
 		meta.setDisplayName(Color.chat("&a+"));
 		item.setItemMeta(meta);	
 		this.setItem(5, item);
-		
+		if(stackSize < 16) {
+			item.setAmount(1);
+			item.setItemMeta(m);
+			item.setType(Material.IRON_FENCE);
+		}else
 		item.setAmount(16);	
 		this.setItem(6, item.clone());
+		if(stackSize < 32) {
+			item.setAmount(1);
+			item.setItemMeta(m);
+			item.setType(Material.IRON_FENCE);
+		}else
 		item.setAmount(32);
 		this.setItem(7, item.clone());
+		if(stackSize < 64) {
+			item.setAmount(1);
+			item.setItemMeta(m);
+			item.setType(Material.IRON_FENCE);
+		}else
 		item.setAmount(64);
 		this.setItem(8, item.clone());
+		
 		
 		item = VirtualShop.getStainedGlassItem("RED", 14);
 		meta = item.getItemMeta();
@@ -54,10 +250,25 @@ public class GuiSellOrBuy extends GuiManager {
 		item.setItemMeta(meta);	
 		this.setItem(3, item);
 		
+		if(stackSize < 16) {
+			item.setAmount(1);
+			item.setItemMeta(m);
+			item.setType(Material.IRON_FENCE);
+		}else
 		item.setAmount(16);
 		this.setItem(2, item.clone());
+		if(stackSize < 32) {
+			item.setAmount(1);
+			item.setItemMeta(m);
+			item.setType(Material.IRON_FENCE);
+		}else
 		item.setAmount(32);
 		this.setItem(1, item.clone());
+		if(stackSize < 64) {
+			item.setAmount(1);
+			item.setItemMeta(m);
+			item.setType(Material.IRON_FENCE);
+		}else
 		item.setAmount(64);
 		this.setItem(0, item.clone());
 		item = VirtualShop.getStainedGlassItem("BLACK", 15);
@@ -70,8 +281,8 @@ public class GuiSellOrBuy extends GuiManager {
 		}
 		item = new ItemStack(Material.BARRIER, 1);
 		meta = item.getItemMeta();
-		meta.setDisplayName(Color.chat(GuiLanguage.getStr("back")));
-		meta.setLore(Arrays.asList(Color.chat(GuiLanguage.getStr("backToPrefix")+categoryId+":"+categoryPage)));
+		meta.setDisplayName(f.autoLang("shopMenuBack"));
+		meta.setLore(Arrays.asList(Color.chat(GuiLanguage.getStr("backToPrefix")+categoryId+"-"+categoryPage)));
 		item.setItemMeta(meta);
 		this.setItem(26, item);
 		
@@ -100,20 +311,33 @@ public class GuiSellOrBuy extends GuiManager {
 		player.openInventory(this.getInventory());
 	}
 	
+	public static int getStackSize(Inventory inv) {
+		if(inv.getItem(2).getType() == Material.IRON_FENCE) {
+			return 1;
+		}
+		if(inv.getItem(1).getType() == Material.IRON_FENCE) {
+			return 16;
+		}
+		if(inv.getItem(0).getType() == Material.IRON_FENCE) {
+			return 32;
+		}
+		return 64;
+	}
+	
 	public static void Add(Inventory inv, int howMany) {
+		int stackSize = getStackSize(inv);
 		int x = 0;
 		int totalAmount = 0;
 		for(int i = 18; i <= 24; i++) {
 			if(inv.getItem(i) != null) x++; else break;
 		}
-		x -= 1;
-		x += 18;
-		if(inv.getItem(x).getAmount()+howMany > 64) {
+		x += 17;
+		if(inv.getItem(x).getAmount()+howMany > stackSize) {
 			ItemStack item = inv.getItem(x);
 			int itemAmount = item.getAmount();
-			item.setAmount(64);
+			item.setAmount(stackSize);
 			ItemStack newStack = item.clone();
-			newStack.setAmount((itemAmount+howMany)-64);
+			newStack.setAmount((itemAmount+howMany)-stackSize);
 			if(x+1 != 25) inv.setItem(x+1, newStack);
 		}else {
 			ItemStack item = inv.getItem(x);
@@ -124,16 +348,18 @@ public class GuiSellOrBuy extends GuiManager {
 		}
 		ItemStack getMoney = inv.getItem(4);
 		List<String> lore = getMoney.getItemMeta().getLore();
-		String pieceCost = lore.get(0);
-		int piece = Integer.parseInt(pieceCost.substring(GuiLanguage.getStr("piecePrefix").length()));
+		int h = lore.size();
+		String pieceCost = lore.get(h-2);
+		int piece = Integer.parseInt(pieceCost.substring(f.autoLang("piecePrefix").length()).replace(",", ""));
 		long total = piece*totalAmount;
-		lore.set(1, Color.chat(GuiLanguage.getStr("totalPrefix")+VirtualShop.numberToStr(total)));
+		lore.set(h-1, Color.chat(GuiLanguage.getStr("totalPrefix")+VirtualShop.numberToStr(total)));
 		ItemStack loreChange = inv.getItem(4);
 		ItemMeta meta = loreChange.getItemMeta();
 		meta.setLore(lore);
 		loreChange.setItemMeta(meta);
 	}
 	public static void Remove(Inventory inv, int howMany) {
+		int stackSize = getStackSize(inv);
 		int x = 0;
 		int totalAmount = 0;
 		for(int i = 18; i <= 24; i++) {
@@ -148,7 +374,7 @@ public class GuiSellOrBuy extends GuiManager {
 				int itemAmount = inv.getItem(x).getAmount();
 				inv.setItem(x, null);
 				ItemStack newStack = inv.getItem(x-1);
-				newStack.setAmount((itemAmount-howMany)+64);
+				newStack.setAmount((itemAmount-howMany)+stackSize);
 			}
 		}else {
 			ItemStack item = inv.getItem(x);
@@ -159,13 +385,24 @@ public class GuiSellOrBuy extends GuiManager {
 		}
 		ItemStack getMoney = inv.getItem(4);
 		List<String> lore = getMoney.getItemMeta().getLore();
-		String pieceCost = lore.get(0);
-		int piece = Integer.parseInt(pieceCost.substring(GuiLanguage.getStr("piecePrefix").length()));
+		int h = lore.size();
+		String pieceCost = lore.get(h-2);
+		int piece = Integer.parseInt(pieceCost.substring(f.autoLang("piecePrefix").length()).replace(",", ""));
 		long total = piece*totalAmount;
-		lore.set(1, Color.chat(GuiLanguage.getStr("totalPrefix")+VirtualShop.numberToStr(total)));
+		lore.set(h-1, f.autoLang("totalPrefix")+VirtualShop.numberToStr(total));
 		ItemStack loreChange = inv.getItem(4);
 		ItemMeta meta = loreChange.getItemMeta();
 		meta.setLore(lore);
 		loreChange.setItemMeta(meta);
+	}
+	
+	private void back() {
+		Bukkit.getScheduler().scheduleSyncDelayedTask(VirtualShop.plugin, new Runnable() {
+			
+			@Override
+			public void run() {
+				new GuiItems(player, categoryPage, categoryId);
+			}
+		});
 	}
 }

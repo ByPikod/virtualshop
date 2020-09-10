@@ -5,21 +5,25 @@ import java.util.List;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import me.pikod.functions.Color;
 import me.pikod.main.VirtualShop;
+import me.pikod.utils.Color;
+import me.pikod.utils.f;
 
 public class GuiEditCategory extends GuiManager {
 	public GuiEditCategory(Player player, short categorySlot) {
-		this.create(1, GuiLanguage.edit_category, "editCategory");
+		this.create(1, f.autoLang("editCategoryTitle"));
+		YamlConfiguration lang = VirtualShop.lang;
 		ConfigurationSection s = VirtualShop.shops.getConfigurationSection("categories."+categorySlot);
 		ItemStack item = new ItemStack(Material.matchMaterial(s.getString("item")), 1);
 		item.setDurability((short) VirtualShop.shops.getInt("categories."+categorySlot+".subID"));
 		ItemMeta meta = item.getItemMeta();
-		meta.setDisplayName(Color.chat(VirtualShop.shops.getString("categories."+categorySlot+".displayName")));
+		if(VirtualShop.shops.isSet("categories."+categorySlot+".displayName"))
+		meta.setDisplayName(f.c(VirtualShop.shops.getString("categories."+categorySlot+".displayName")));
 		
 		List<String> lore = new ArrayList<String>();
 		
@@ -29,10 +33,13 @@ public class GuiEditCategory extends GuiManager {
 		
 		ItemStack kaldir = new ItemStack(Material.LAVA_BUCKET, 1);
 		meta = kaldir.getItemMeta();
-		meta.setDisplayName(Color.chat("&4Delete"));
+		meta.setDisplayName(f.autoLang("editCategory_Delete"));
 		lore.clear();
-		lore.add(Color.chat("&cClick for delete"));
-		lore.add(Color.chat("&cthe category!"));
+		if(lang.isSet("editCategory_DeleteLore")) {
+			for(String key : lang.getStringList("editCategory_DeleteLore")) {
+				lore.add(f.c(key));
+			}
+		}
 		meta.setLore(lore);
 		kaldir.setItemMeta(meta);
 		
@@ -40,7 +47,7 @@ public class GuiEditCategory extends GuiManager {
 		
 		ItemStack slot = new ItemStack(Material.COMPASS, 1);
 		meta = slot.getItemMeta();
-		meta.setDisplayName(Color.chat("&aCategory Location (Slot)"));
+		meta.setDisplayName(f.autoLang("editCategory_CategoryId"));
 		lore.clear();
 		lore.add(""+categorySlot);
 		meta.setLore(lore);
@@ -50,7 +57,7 @@ public class GuiEditCategory extends GuiManager {
 		
 		ItemStack esyaSayisi = new ItemStack(Material.CHEST, 1);
 		meta = esyaSayisi.getItemMeta();
-		meta.setDisplayName(Color.chat("&aItem Count"));
+		meta.setDisplayName(f.autoLang("editCategory_ItemCount"));
 		lore.clear();
 		if(VirtualShop.shops.getConfigurationSection("categories."+categorySlot+".shop") != null) {
 			lore.add(""+VirtualShop.shops.getConfigurationSection("categories."+categorySlot+".shop").getKeys(false).size());
@@ -72,12 +79,12 @@ public class GuiEditCategory extends GuiManager {
 		}
 		
 		meta = decoration.getItemMeta();
-		meta.setDisplayName(Color.chat("&7Is Decoration"));
+		meta.setDisplayName(f.autoLang("editCategory_IsDecoration"));
 		lore.clear();
 		if(VirtualShop.shops.getBoolean("categories."+categorySlot+".decoration")) {
-			lore.add(Color.chat("&aEnabled"));
+			lore.add(Color.chat(f.autoLang("decorationEnabled")));
 		}else {
-			lore.add(Color.chat("&cDisabled"));
+			lore.add(Color.chat(f.autoLang("decorationDisabled")));
 		}
 		
 		meta.setLore(lore);
@@ -87,10 +94,13 @@ public class GuiEditCategory extends GuiManager {
 		
 		ItemStack geri = new ItemStack(Material.BARRIER);
 		meta = geri.getItemMeta();
-		meta.setDisplayName(Color.chat("&4Back"));
+		meta.setDisplayName(f.autoLang("editCategory_Back"));
 		lore.clear();
-		lore.add(Color.chat("&cClick for back"));
-		lore.add(Color.chat("&cprevious menu!"));
+		if(lang.isSet("editCategory_BackLore")) {
+			for(String key : lang.getStringList("editCategory_BackLore")) {
+				lore.add(f.c(key));
+			}
+		}
 		meta.setLore(lore);
 		geri.setItemMeta(meta);	
 		

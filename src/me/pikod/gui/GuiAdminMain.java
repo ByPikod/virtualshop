@@ -8,11 +8,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import me.pikod.functions.Color;
+import me.pikod.main.VirtualShop;
+import me.pikod.utils.Color;
+import me.pikod.utils.f;
 
 public class GuiAdminMain extends GuiManager {
 	public GuiAdminMain(Player player) {
-		this.create(1, GuiLanguage.admin_menu, "adminMenu");
+		this.create(1, f.autoLang("adminMainMenuTitle"));
 		
 		ItemStack reloadPlugin = new ItemStack(Material.BEACON);
 		ItemStack kagit1 = new ItemStack(Material.PAPER, 1);
@@ -20,10 +22,14 @@ public class GuiAdminMain extends GuiManager {
 		ItemStack categories = new ItemStack(Material.ANVIL, 1);
 		
 		ItemMeta meta = kagit1.getItemMeta();
-		meta.setDisplayName(Color.chat("&a&lPlugin Creators"));
+		meta.setDisplayName(f.autoLang("mainMenu_Creators"));
 		List<String> lore = new ArrayList<>();
-		lore.add(Color.chat("&2Created by Pikod!"));
-		lore.add(Color.chat("&2Click for more..."));
+		if(VirtualShop.lang.isSet("creatorsLore")) {
+			for(String str : VirtualShop.lang.getStringList("creatorsLore")) {
+				lore.add(f.c(str));
+			}
+		}
+		
 		meta.setLore(lore);
 		kagit1.setItemMeta(meta);
 		
@@ -36,17 +42,24 @@ public class GuiAdminMain extends GuiManager {
 		kagit2.setItemMeta(meta);*/
 		
 		meta = categories.getItemMeta();
-		meta.setDisplayName(Color.chat("&a&l[Add / Edit] Category"));
+		meta.setDisplayName(Color.chat(f.autoLang("mainMenu_Categories")));
 		lore.clear();
-		lore.add(Color.chat("&2Opens the add and"));
-		lore.add(Color.chat("&2edit categories menu!"));
+		if(VirtualShop.lang.isSet("categoriesLore")) {
+			for(String str : VirtualShop.lang.getStringList("categoriesLore")) {
+				lore.add(f.c(str));
+			}
+		}
 		meta.setLore(lore);
 		categories.setItemMeta(meta);
 		
 		meta = reloadPlugin.getItemMeta();
-		meta.setDisplayName(Color.chat("&c&lReload"));
+		meta.setDisplayName(Color.chat(f.autoLang("mainMenu_Reload")));
 		lore.clear();
-		lore.add(Color.chat("&4Reloads config"));
+		if(VirtualShop.lang.isSet("reloadLore")) {
+			for(String str : VirtualShop.lang.getStringList("reloadLore")) {
+				lore.add(f.c(str));
+			}
+		}
 		meta.setLore(lore);
 		reloadPlugin.setItemMeta(meta);
 		

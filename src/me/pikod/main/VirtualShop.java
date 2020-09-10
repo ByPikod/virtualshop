@@ -1,11 +1,11 @@
 package me.pikod.main;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -13,33 +13,41 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import me.pikod.commands.cmdMain;
 import me.pikod.commands.cmdMarket;
-import me.pikod.functions.Color;
-import me.pikod.functions.f;
+import me.pikod.commands.cmdSell;
 import me.pikod.listener.ActionHandler;
+import me.pikod.utils.Color;
+import me.pikod.utils.f;
 import net.milkbowl.vault.economy.Economy;
 
 public class VirtualShop extends JavaPlugin {
+
 	
 	public static Logger log;
 	public static VirtualShop plugin;
 	public static PManager pmanager;
-	public static FileConfiguration shops;
-	public static FileConfiguration lang;
+	public static YamlConfiguration shops;
+	public static YamlConfiguration lang;
+	public static YamlConfiguration config;
 	public static Economy vault;
 	public static UpdateChecker uc;
 	public static boolean debugMode = false;
 	public static boolean isUpperVersion;
+	public static String country = System.getProperty("user.country");
 	
 	
 	public void vaultGet() {
 		RegisteredServiceProvider<Economy> eco = getServer().getServicesManager().getRegistration(Economy.class);
 		if(eco != null) {
 			VirtualShop.vault = eco.getProvider();
-			log.info("Success! Vault plugin are finded.");
 		}else {
-			log.warning("Failed get Vault! Disabling plugin.");
+			if(country.equals("TR")) {
+				log.warning("Vault bulunamadý, eklenti devredýþý býrakýlýyor.");
+			}else {
+				log.warning("Failed get Vault! Disabling plugin.");
+			}
 			Bukkit.getPluginManager().disablePlugin(this);
 		}
+		log.info("Country: "+country);
 	}
 	
 	@Override
@@ -51,12 +59,14 @@ public class VirtualShop extends JavaPlugin {
 		log = getLogger();
 		shops = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "shops.yml"));
 		lang = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "lang.yml"));
+		config = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "config.yml"));
 		
 		log.info("Settings setted!");
 		
 		new ActionHandler(this);
 		new cmdMain(this);
 		new cmdMarket(this);
+		new cmdSell(this);
 		
 		log.info("Commands executed!");
 		
@@ -67,7 +77,6 @@ public class VirtualShop extends JavaPlugin {
 			Bukkit.getPluginManager().disablePlugin(this);
 		}
 		vaultGet();
-		
 		try {
 			if(Material.matchMaterial("BLACK_STAINED_GLASS_PANE") == null) {
 				isUpperVersion = false;
@@ -75,6 +84,7 @@ public class VirtualShop extends JavaPlugin {
 		}catch(Exception e) {
 			isUpperVersion = false;
 		}
+		Seller.loadClass();
 	}
 	
 	@Override
@@ -82,7 +92,22 @@ public class VirtualShop extends JavaPlugin {
 		
 	}
 	
+	public static void saveShops() {
+		try {
+			shops.save(pmanager.shopConfig);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public static void reloadShops() {
+		reloadShopsPriv(false);
+	}
+	public static void reloadShops(boolean Seller) {
+		reloadShopsPriv(Seller);
+	}
+	
+	private static void reloadShopsPriv(boolean seller) {
 		if(!plugin.getDataFolder().exists()) {
 			plugin.getDataFolder().mkdirs();
 		}
@@ -90,10 +115,19 @@ public class VirtualShop extends JavaPlugin {
 			pmanager.copy(plugin.getResource("shops.yml"), pmanager.shopConfig);
 		}
 		if(!pmanager.langConfig.exists()) {
-			pmanager.copy(plugin.getResource("lang.yml"), pmanager.langConfig);
+			if(country.equals("TR")) {
+				pmanager.copy(plugin.getResource("lang_tr.yml"), pmanager.langConfig);
+			}else {
+				pmanager.copy(plugin.getResource("lang.yml"), pmanager.langConfig);
+			}
 		}
+		if(!pmanager.config.exists()) {
+			pmanager.copy(plugin.getResource("config.yml"), pmanager.config);
+		}
+		config = YamlConfiguration.loadConfiguration(new File(VirtualShop.plugin.getDataFolder(), "config.yml"));
 		shops = YamlConfiguration.loadConfiguration(new File(VirtualShop.plugin.getDataFolder(), "shops.yml"));
 		lang = YamlConfiguration.loadConfiguration(new File(VirtualShop.plugin.getDataFolder(), "lang.yml"));
+		if(seller) Seller.loadClass();
 	}
 	
 	public static String strSade(String str) {
@@ -147,8 +181,9 @@ public class VirtualShop extends JavaPlugin {
 		return isSade;
 	}
 	
-	public static String numberToStr(long sayi) {
-		String ret = ""+sayi;
+	public static String numberToStr(double sayi) {
+		String strNumber = String.valueOf(sayi);
+		String ret = ""+(long) sayi;
 		if(sayi > 999) {
 			ret = ret.substring(0, ret.length()-3) + "," + ret.substring(ret.length()-3);
 		}
@@ -166,6 +201,10 @@ public class VirtualShop extends JavaPlugin {
 		}
 		if(sayi > 999_999_999_999_999_999l) {
 			ret = ret.substring(0, ret.length()-31) + "," + ret.substring(ret.length()-31);
+		}
+		String kalan = strNumber.substring(strNumber.indexOf('.'));
+		if(!kalan.equals(".0")) {
+			ret += kalan;
 		}
 		return ret;
 	}

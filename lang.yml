@@ -1,44 +1,216 @@
-# ------------------
-#     GUI TITLES
-# ------------------
+#*****************************************************************************************#
+# --¬   --¬--¬------¬ --------¬--¬   --¬ -----¬ --¬     -------¬--¬  --¬ ------¬ ------¬  #
+# --¦   --¦--¦---==--¬L==---==---¦   --¦---==--¬--¦     ---====---¦  --¦---===--¬---==--¬ #
+# --¦   --¦--¦--------   --¦   --¦   --¦-------¦--¦     -------¬-------¦--¦   --¦-------- #
+# L--¬ ------¦---==--¬   --¦   --¦   --¦---==--¦--¦     L====--¦---==--¦--¦   --¦---===-  #
+#  L------ --¦--¦  --¦   --¦   L----------¦  --¦-------¬-------¦--¦  --¦L----------¦      #
+#   L===-  L=-L=-  L=-   L=-    L=====- L=-  L=-L======-L======-L=-  L=- L=====- L=-      #
+#   *******************************************************************************       #
+#                                                                                         #
+#                       VirtualShop RELOADED - 1.0.6v - from Pikod                        #
+#                             https://wwww.youtube.com/c/pikod                            #
+#                                                                                         #
+#                   If you want to remove the lore, delete from config.                   #
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-categories_title: '&9Categories'
-items_title: '&9Items'
-sell_item_title: '&9Sell Item'
-buy_item_title: '&9Buy Item'
-
 # ------------------
-#      MESSAGES
+#      MESSAGES     
 # ------------------
 closedSell: '&cThe sale of this item has been disabled.'
 closedBuy: '&cThe purchase of this items has been disabled.'
+writeBuyAmount: '&aHow many do you want to sell? Write &7"cancel" &ato cancel buy.'
+writeSellAmount: '&aHow many do you want to buy? Write &7"cancel" &ato cancel sell. (If you want sell all, write &7"all" &a)'
+incorrectNumber: '&cYou entered an incorrect number.'
 successBuy: '&aYou bought &2{STACK}&ax &2{ITEM} &afor &2{MONEY}&a.'
 successSell: '&aYou sold &2{STACK}&ax &2{ITEM} &afor &2{MONEY}&a.'
-notEnoughMoney: '&cYou don''t have enough money to buy!'
-notEnoughItem: '&cYou don''t have enough items to sell!'
+notEnoughMoney: '&cYou don''t have enough money to buy.'
+notEnoughItem: '&cYou don''t have enough items to sell.'
+noSellableItem: '&cThere are no salable items in your inventory.'
+emptyHand: '&cYou must have something in your hand.'
+dontSellable: '&cThe item in your hand cannot be sold.'
 noPermission: '&cYou don''t have permission!'
+noConsole: '&cYou can''t use this command from console.'
+correctUsage: '&cCorrect usage: &f{USAGE}'
+cancelKeyword: 'cancel'
+
+# ------------------------
+#  ADMIN PANEL - MESSAGES 
+# ------------------------
+
+successReloaded: '&9VirtualShop &8&l» &aPlugin is reloaded!'
+newUpdates: '&9VirtualShop &8&l» &cFinded new updates! Link for update: &7https://www.spigotmc.org/resources/74496'
+cannotBeAddItem: '&9VirtualShop &8&l» &cCannot be add item to here!'
+successRemoved: '&9VirtualShop &8&l» &aSuccessfully removed!'
+writeNewBuyCost: '&9VirtualShop &8&l» &aPlease write a new buy cost! If you want to disable buying, write "0". If you want to cancel write "cancel".'
+writeNewSellCost: '&9VirtualShop &8&l» &aPlease write a new sell cost! If you want to disable selling, write "0". If you want to cancel write "cancel".'
+invalidNumber: '&9VirtualShop &8&l» &cThe input you entered is not a valid number. Please try again or cancel.'
+assigned: '&9VirtualShop &8&l» &aSuccessfully assigned new variable!'
+cancelled: '&cCancelled!'
+cancelKeywordAdmin: 'cancel'
 
 # ------------------
-#  GUI BUTTON LORES
+#     GUI TITLES    
+# ------------------
+# (They must be different from each other.)
+
+categoriesTitle: '&9Categories'
+itemsTitle: '&9Items'
+sellItemTitle: '&9Sell Item'
+buyItemTitle: '&9Buy Item'
+
+# ------------------
+#  GUI BUTTON LORES 
 # ------------------
 
-# ENGLISH: You shouldn't use '&r' in buyCost
-buyCost: '&2(Left Click) &aBuy: &e{COST}'
-# ENGLISH: You shouldn't use '&r' in sellCost
-sellCost: '&2(Right Click) &aSell: &e{COST}'
-piecePrefix: '&aPiece: &l'
-totalPrefix: '&aTotal: &l'
-backToPrefix: '&cTo: &l'
+# Items Menu
+itemLore:
+    - '&2(Left Click) &aBuy: &e{BUY_COST}'
+    - '&2(Right Click) &aSell: &e{SELL_COST}'
 buyClosed: '&cDisabled'
 sellClosed: '&cDisabled'
+mainMenuLore:
+    - '&fGo to main menu.'
+nextPageLore:
+    - '&fGo to next page.'
+previousPageLore:
+    - '&fGo to previous page.'
+
+# Sell / Buy - Menu
+piecePrefix: '&aPiece: &e'
+totalPrefix: '&aTotal: &e'
+backToPrefix: '&cTo: &l'
 
 # ------------------
-#  GUI BUTTON NAMES
+#  GUI BUTTON NAMES 
 # ------------------
 
-accept: '&9Accept'
+# Sell / Buy - Menu
+accept: '&aAccept'
+shopMenuBack: '&4Back'
+
+# Items Menu
 back: '&9Back'
 page: '&9Page'
 mainMenu: '&9Main Menu'
 previousPage: '&9Previous Page'
 nextPage: '&9Next Page'
+
+# --------------------------
+#  ADMIN PANEL - GUI TITLES 
+# --------------------------
+# (They must be different from each other.)
+
+adminMainMenuTitle: '&9&lAdmin Menu'
+editCategoriesTitle: '&9Edit Categories'
+editCategoryTitle: '&9Edit Category'
+addItemToCategoryTitle: '&9Add Item'
+editItemTitle: '&9Edit Item'
+
+# --------------------------------
+#  ADMIN PANEL - GUI BUTTON LORES 
+# --------------------------------
+
+# Main Menu
+reloadLore: 
+    - '&4Reloads config.'
+categoriesLore:
+    - '&2Opens the manage'
+    - '&2categories menu.'
+creatorsLore:
+    - '&6Created by Pikod!'
+    - '&6Click for more...'
+
+# Categories Menu
+panelCategoryLore:
+    - '&2Right Click:&a Remove or Edit category'
+    - '&2Left Click:&a Add items to category'
+ 
+# Add Item Menu
+panelItemLore:
+    - '&2Click for edit!'
+    - '&aBuy: &e{BUY_COST}'
+    - '&aSell: &e{SELL_COST}'
+panelMainMenuLore:
+    - '&fGo to main menu.'
+panelPreviousPageLore:
+    - '&fGo to previous page.'
+panelNextPageLore:
+    - '&fGo to next page.'
+panelPageLore:
+    - '&fYou can see which'
+    - '&fpage you are on.'
+
+# Edit Category Menu
+decorationEnabled: '&aEnabled'
+decorationDisabled: '&cDisabled'
+editCategory_DeleteLore:
+    - '&cClick for delete'
+    - '&ccategory.'
+editCategory_BackLore:
+    - '&cClick for back'
+    - '&cto previous menu.'
+    
+# Add Item Menu
+panelSellClosed: '&cDisabled'
+panelBuyClosed: '&cDisabled'
+
+# Edit Item Menu
+editItem_BackLore:
+    - '&cClick for back'
+    - '&cto previous menu.'
+editItem_DeleteLore:
+    - '&cClick for delete'
+    - '&citem in category.'
+editItem_SetBuyCost:
+    - '&cClick for'
+    - '&cset buy cost.'
+editItem_SetSellCost:
+    - '&cClick for'
+    - '&cset sell cost.'
+editItem_StackSizeLore:
+    - '&aStack Size: &2{STACK_SIZE}'
+    - '&aClick to change!'
+
+# --------------------------------
+#  ADMIN PANEL - GUI BUTTON NAMES 
+# --------------------------------
+
+# Main Menu
+mainMenu_Reload: '&c&lReload'
+mainMenu_Categories: '&a&lAdd or Remove Category'
+mainMenu_Creators: '&e&lPlugin Creators'
+
+# Edit Category Menu
+editCategory_IsDecoration: '&7Make Decoration'
+editCategory_Delete: '&4Delete'
+editCategory_CategoryId: '&aCategory Id'
+editCategory_ItemCount: '&aItem Count'
+editCategory_Back: '&4Back'
+
+# Add Item Menu
+addItem_PreviousPage: '&9Previous Page'
+addItem_NextPage: '&9Next Page'
+addItem_Page: '&9Page'
+addItem_MainMenu: '&9Main Menu'
+addItem_CategoryId: '&9Category Id'
+addItem_ItemCount: '&9Item Count'
+
+# Edit Item Menu
+editItem_Back: '&4Back'
+editItem_Delete: '&4Delete'
+editItem_BuyCost: '&aSet Buy Cost &2({COST})'
+editItem_SellCost: '&aSet Sell Cost &2({COST})'
+editItem_SellDisabled: 'Disabled'
+editItem_BuyDisabled: 'Disabled'
+editItem_StackSize: '&7Stack Size'
+
+# --------------------------------
+#            HELP MENU
+# --------------------------------
+
+helpMenu:
+    - '&e######### &lHELP &e#########'
+    - '&a/vs gui: &7Open admin GUI.'
+    - '&a/vs reload: &7Reload plugin.'
+    - '&a/vs help: &7Show commands.'
+    - '&e------------------------------'

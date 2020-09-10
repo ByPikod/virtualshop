@@ -9,22 +9,27 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import me.pikod.functions.Color;
 import me.pikod.main.VirtualShop;
+import me.pikod.utils.Color;
+import me.pikod.utils.f;
 
 public class GuiCategoriesAdmin extends GuiManager {
 	public GuiCategoriesAdmin(Player player) {
-		this.create(VirtualShop.shops.getInt("categoryMenuSize"), Color.chat(GuiLanguage.categories_admin_menu), "categoriesAdmin");
+		this.create(VirtualShop.config.getInt("categoryMenuSize"), Color.chat(f.autoLang("editCategoriesTitle")));
 		for(int i = 0; i < this.getInventory().getSize(); i++) {
 			if(VirtualShop.shops.getConfigurationSection("categories."+i) != null) {
 				ConfigurationSection s = VirtualShop.shops.getConfigurationSection("categories."+i);
 				Material m = Material.matchMaterial(s.getString("item"));
 				ItemStack item = new ItemStack(m, 1);
 				ItemMeta meta = item.getItemMeta();
-				meta.setDisplayName(Color.chat(s.getString("displayName")));
+				if(s.isSet("displayName"))
+				meta.setDisplayName(f.c(s.getString("displayName")));
 				List<String> lore = new ArrayList<String>();
-				lore.add(Color.chat("&2Right Click:&a Delete/Edit category"));
-				lore.add(Color.chat("&2Left Click:&a Add items to category"));
+				if(VirtualShop.lang.isSet("panelCategoryLore")) {
+					for(String str : VirtualShop.lang.getStringList("panelCategoryLore")) {
+						lore.add(f.c(str));
+					}
+				}
 				meta.setLore(lore);
 				item.setItemMeta(meta);
 				item.setDurability((short) s.getInt("subID"));

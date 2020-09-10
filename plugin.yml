@@ -1,6 +1,6 @@
 name: VirtualShop
-version: 1.0.5
-descreption: Virtual Shop plugin (English Language).
+version: 1.0.7
+description: Virtual Shop plugin (with Admin GUI)
 author: HzPikod
 softdepend: [Vault]
 main: me.pikod.main.VirtualShop
@@ -8,16 +8,23 @@ api-version: 1.15
 website: https://wwww.youtube.com/pikod
 commands:
     virtualshop:
-        descreption: Opens admin panel
+        description: Opens admin panel
         aliases: [vs]
         usage: /vs
     shop:
-        descreption: Opens shop
+        description: Opens shop
         aliases: [shop, market]
         usage: /shop
+    sell:
+        description: Sell item
+        aliases: [sat]
+        usage: "/sell all hand"
 permissions:
     virtualshop.manage:
-        descreption: Admin panel permission.
+        description: Admin panel permission.
     virtualShop.shop:
-        descreption: Shop open permission.
+        description: Shop open permission.
+        default: true
+    virtualshop.sell:
+        description: Sell hand/all command permission.
         default: true
