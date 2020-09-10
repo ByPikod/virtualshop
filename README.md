@@ -9,6 +9,7 @@ Ayrıca <a target="_blank" href="https://www.youtube.com/c/pikod">kanalıma</a> 
 <ul>
   <li><b>/market:</b> Marketi açar</li>
   <li><b>/vs:</b> Marketi düzenleme menüsünü açar</li>
+  <li><b>/sell <all/hand></b> Hand parametresi ile elde ki eşyadan envanterde ne kadar varsa satar, all parametresi ile de envanter de satılık olan her şeyi satar.</li>
 </ul>
 
 # Permissions
