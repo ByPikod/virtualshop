@@ -1,3 +1,5 @@
 /VirtualShop/
 /bin/
 .classpath
+.project
+/.settings/
