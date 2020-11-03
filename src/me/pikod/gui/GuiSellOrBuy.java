@@ -2,7 +2,6 @@ package me.pikod.gui;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -26,10 +25,11 @@ public class GuiSellOrBuy extends GuiManager {
 	private final Player player;
 	
 	public GuiSellOrBuy(Player player, boolean isBuy, ItemStack item, double cost, int categoryId, int categoryPage, ConfigurationSection itemSec) {
+		super(player);
 		this.categoryId = categoryId;
 		this.categoryPage = categoryPage;
 		this.player = player;
-		
+
 		if(f.autoConfig("shoppingType").toUpperCase().equals("CHAT")) {
 			player.closeInventory();
 			ItemStack verilecekItem = item.clone();
@@ -71,7 +71,7 @@ public class GuiSellOrBuy extends GuiManager {
 						}
 						int amountBackup = totalAmount;
 						if(!(money >= totalAmount*piece)) {
-							event.getPlayer().sendMessage(Color.chat(GuiLanguage.getStr("notEnoughMoney")));
+							event.getPlayer().sendMessage(f.autoLang("notEnoughMoney"));
 							back();
 							return true;
 						}
@@ -87,7 +87,7 @@ public class GuiSellOrBuy extends GuiManager {
 							verilecekItem.setAmount(totalAmount);
 							playerInventory.addItem(verilecekItem);
 						}
-						String msg = Color.chat(GuiLanguage.getStr("successBuy"));
+						String msg = f.autoLang("successBuy");
 						msg = msg.replace("{ITEM}", verilecekItem.getType().toString());
 						msg = msg.replace("{MONEY}", String.valueOf(VirtualShop.numberToStr((long) (totalAmount*piece))));
 						msg = msg.replace("{STACK}", String.valueOf(amountBackup));
@@ -168,11 +168,11 @@ public class GuiSellOrBuy extends GuiManager {
 							}
 						}
 						if(selled == 0) {
-							event.getPlayer().sendMessage(Color.chat(GuiLanguage.getStr("notEnoughItem")));
+							event.getPlayer().sendMessage(f.autoLang("notEnoughItem"));
 						}else {
 							double m = selled*piece;
 							VirtualShop.vault.depositPlayer(event.getPlayer(), m);
-							String msg = Color.chat(GuiLanguage.getStr("successSell"));
+							String msg = f.autoLang("successSell");
 							msg = msg.replace("{ITEM}", verilecekItem.getType().toString());
 							msg = msg.replace("{MONEY}", VirtualShop.numberToStr((long) m));
 							msg = msg.replace("{STACK}", String.valueOf(selled));
@@ -188,9 +188,9 @@ public class GuiSellOrBuy extends GuiManager {
 		}
 		
 		if(isBuy) {
-			this.create(3, GuiLanguage.getStr("buyItemTitle"));
+			this.create(3, f.autoLang("buyItemTitle"));
 		}else {
-			this.create(3, GuiLanguage.getStr("sellItemTitle"));
+			this.create(3, f.autoLang("sellItemTitle"));
 		}
 		ItemStack anaItem = item.clone();
 		int itemAdet = item.getAmount();
@@ -204,8 +204,8 @@ public class GuiSellOrBuy extends GuiManager {
 			}
 			lore.add(f.c("&r"));
 		}
-		lore.add(Color.chat(GuiLanguage.getStr("piecePrefix")+VirtualShop.numberToStr(((int) itemCost))));
-		lore.add(Color.chat(GuiLanguage.getStr("totalPrefix")+VirtualShop.numberToStr((long) (itemCost))));
+		lore.add(f.autoLang("piecePrefix")+VirtualShop.numberToStr(itemCost));
+		lore.add(f.autoLang("totalPrefix")+VirtualShop.numberToStr(itemCost));
 		meta.setLore(lore);
 		item.setItemMeta(meta);
 		this.setItem(4, item);
@@ -221,24 +221,28 @@ public class GuiSellOrBuy extends GuiManager {
 		meta.setDisplayName(Color.chat("&a+"));
 		item.setItemMeta(meta);	
 		this.setItem(5, item);
+		Material demir_parmaklik = Material.matchMaterial("IRON_FENCE");
+		if(demir_parmaklik == null) {
+			demir_parmaklik = Material.matchMaterial("IRON_BARS");
+		}
 		if(stackSize < 16) {
 			item.setAmount(1);
 			item.setItemMeta(m);
-			item.setType(Material.IRON_FENCE);
+			item.setType(demir_parmaklik);
 		}else
 		item.setAmount(16);	
 		this.setItem(6, item.clone());
 		if(stackSize < 32) {
 			item.setAmount(1);
 			item.setItemMeta(m);
-			item.setType(Material.IRON_FENCE);
+			item.setType(demir_parmaklik);
 		}else
 		item.setAmount(32);
 		this.setItem(7, item.clone());
 		if(stackSize < 64) {
 			item.setAmount(1);
 			item.setItemMeta(m);
-			item.setType(Material.IRON_FENCE);
+			item.setType(demir_parmaklik);
 		}else
 		item.setAmount(64);
 		this.setItem(8, item.clone());
@@ -253,21 +257,21 @@ public class GuiSellOrBuy extends GuiManager {
 		if(stackSize < 16) {
 			item.setAmount(1);
 			item.setItemMeta(m);
-			item.setType(Material.IRON_FENCE);
+			item.setType(demir_parmaklik);
 		}else
 		item.setAmount(16);
 		this.setItem(2, item.clone());
 		if(stackSize < 32) {
 			item.setAmount(1);
 			item.setItemMeta(m);
-			item.setType(Material.IRON_FENCE);
+			item.setType(demir_parmaklik);
 		}else
 		item.setAmount(32);
 		this.setItem(1, item.clone());
 		if(stackSize < 64) {
 			item.setAmount(1);
 			item.setItemMeta(m);
-			item.setType(Material.IRON_FENCE);
+			item.setType(demir_parmaklik);
 		}else
 		item.setAmount(64);
 		this.setItem(0, item.clone());
@@ -282,14 +286,15 @@ public class GuiSellOrBuy extends GuiManager {
 		item = new ItemStack(Material.BARRIER, 1);
 		meta = item.getItemMeta();
 		meta.setDisplayName(f.autoLang("shopMenuBack"));
-		meta.setLore(Arrays.asList(Color.chat(GuiLanguage.getStr("backToPrefix")+categoryId+"-"+categoryPage)));
+		setData("category", categoryId);
+		setData("page", categoryPage);
 		item.setItemMeta(meta);
 		this.setItem(26, item);
 		
 		item = new ItemStack(Material.EMERALD_BLOCK, 1);
 		meta = item.getItemMeta();
 		
-		meta.setDisplayName(Color.chat(GuiLanguage.getStr("accept")));
+		meta.setDisplayName(f.autoLang("accept"));
 		item.setItemMeta(meta);
 		this.setItem(25, item);
 		
@@ -308,17 +313,21 @@ public class GuiSellOrBuy extends GuiManager {
 		anaItem.setItemMeta(meta);
 		this.setItem(18, anaItem);
 		
-		player.openInventory(this.getInventory());
+		player.openInventory(gui);
 	}
 	
 	public static int getStackSize(Inventory inv) {
-		if(inv.getItem(2).getType() == Material.IRON_FENCE) {
+		Material demir_parmaklik = Material.matchMaterial("IRON_FENCE");
+		if(demir_parmaklik == null) {
+			demir_parmaklik = Material.matchMaterial("IRON_BARS");
+		}
+		if(inv.getItem(2).getType() == demir_parmaklik) {
 			return 1;
 		}
-		if(inv.getItem(1).getType() == Material.IRON_FENCE) {
+		if(inv.getItem(1).getType() == demir_parmaklik) {
 			return 16;
 		}
-		if(inv.getItem(0).getType() == Material.IRON_FENCE) {
+		if(inv.getItem(0).getType() == demir_parmaklik) {
 			return 32;
 		}
 		return 64;
@@ -350,9 +359,9 @@ public class GuiSellOrBuy extends GuiManager {
 		List<String> lore = getMoney.getItemMeta().getLore();
 		int h = lore.size();
 		String pieceCost = lore.get(h-2);
-		int piece = Integer.parseInt(pieceCost.substring(f.autoLang("piecePrefix").length()).replace(",", ""));
-		long total = piece*totalAmount;
-		lore.set(h-1, Color.chat(GuiLanguage.getStr("totalPrefix")+VirtualShop.numberToStr(total)));
+		double piece = Double.parseDouble(pieceCost.substring(f.autoLang("piecePrefix").length()).replace(",", ""));
+		double total = piece*totalAmount;
+		lore.set(h-1, f.autoLang("totalPrefix")+VirtualShop.numberToStr(total));
 		ItemStack loreChange = inv.getItem(4);
 		ItemMeta meta = loreChange.getItemMeta();
 		meta.setLore(lore);
@@ -387,8 +396,8 @@ public class GuiSellOrBuy extends GuiManager {
 		List<String> lore = getMoney.getItemMeta().getLore();
 		int h = lore.size();
 		String pieceCost = lore.get(h-2);
-		int piece = Integer.parseInt(pieceCost.substring(f.autoLang("piecePrefix").length()).replace(",", ""));
-		long total = piece*totalAmount;
+		double piece = Double.parseDouble(pieceCost.substring(f.autoLang("piecePrefix").length()).replace(",", ""));
+		double total = piece*totalAmount;
 		lore.set(h-1, f.autoLang("totalPrefix")+VirtualShop.numberToStr(total));
 		ItemStack loreChange = inv.getItem(4);
 		ItemMeta meta = loreChange.getItemMeta();

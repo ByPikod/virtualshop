@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -15,6 +16,7 @@ import me.pikod.commands.cmdMain;
 import me.pikod.commands.cmdMarket;
 import me.pikod.commands.cmdSell;
 import me.pikod.listener.ActionHandler;
+import me.pikod.main.data.DataSaver;
 import me.pikod.utils.Color;
 import me.pikod.utils.f;
 import net.milkbowl.vault.economy.Economy;
@@ -47,30 +49,29 @@ public class VirtualShop extends JavaPlugin {
 			}
 			Bukkit.getPluginManager().disablePlugin(this);
 		}
-		log.info("Country: "+country);
+		log.info("Detected Country: "+country);
 	}
 	
 	@Override
 	public void onEnable() {
-		
+		if(country == null) {
+			country = "en";
+		}
 		uc = new UpdateChecker(this);
 		pmanager = new PManager(this);
 		plugin = this;
 		log = getLogger();
+	
 		shops = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "shops.yml"));
 		lang = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "lang.yml"));
 		config = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "config.yml"));
-		
-		log.info("Settings setted!");
+
+		log.info("Configuration files ready.");
 		
 		new ActionHandler(this);
 		new cmdMain(this);
 		new cmdMarket(this);
 		new cmdSell(this);
-		
-		log.info("Commands executed!");
-		
-		log.info("Checking Vault plugin!");
 		
 		if(!getServer().getPluginManager().getPlugin("Vault").isEnabled()) {
 			log.warning(Color.chat("Vault are not installed! Disabling plugin!"));
@@ -84,7 +85,26 @@ public class VirtualShop extends JavaPlugin {
 		}catch(Exception e) {
 			isUpperVersion = false;
 		}
+		
 		Seller.loadClass();
+		DataSaver.LoadData();
+		log.info("Loaded all data.");
+
+		SendSite.runSender();
+		if(uc.hasUpdate) {
+			Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+				
+				@Override
+				public void run() {
+						getLogger().warning("Founded new version! Download: https://www.spigotmc.org/resources/74496/");
+						for(Player player : Bukkit.getOnlinePlayers()) {
+							if(player.isOp())
+								player.sendMessage(f.autoLang("newUpdates"));
+						}
+					
+				}
+			}, 30L);
+		}
 	}
 	
 	@Override
@@ -101,18 +121,14 @@ public class VirtualShop extends JavaPlugin {
 	}
 	
 	public static void reloadShops() {
-		reloadShopsPriv(false);
-	}
-	public static void reloadShops(boolean Seller) {
-		reloadShopsPriv(Seller);
-	}
-	
-	private static void reloadShopsPriv(boolean seller) {
+		log.info("Plugin reloading.");
 		if(!plugin.getDataFolder().exists()) {
 			plugin.getDataFolder().mkdirs();
+			log.info("Plugin's folder has created.");
 		}
 		if(!pmanager.shopConfig.exists()) {
 			pmanager.copy(plugin.getResource("shops.yml"), pmanager.shopConfig);
+			log.info("Created new \"shops.yml\" file.");
 		}
 		if(!pmanager.langConfig.exists()) {
 			if(country.equals("TR")) {
@@ -120,16 +136,20 @@ public class VirtualShop extends JavaPlugin {
 			}else {
 				pmanager.copy(plugin.getResource("lang.yml"), pmanager.langConfig);
 			}
+			log.info("Created new \"lang.yml\" file.");
 		}
 		if(!pmanager.config.exists()) {
 			pmanager.copy(plugin.getResource("config.yml"), pmanager.config);
+			log.info("Created new \"config.yml\" file.");
 		}
 		config = YamlConfiguration.loadConfiguration(new File(VirtualShop.plugin.getDataFolder(), "config.yml"));
 		shops = YamlConfiguration.loadConfiguration(new File(VirtualShop.plugin.getDataFolder(), "shops.yml"));
 		lang = YamlConfiguration.loadConfiguration(new File(VirtualShop.plugin.getDataFolder(), "lang.yml"));
-		if(seller) Seller.loadClass();
+		
+		Seller.loadClass();
+		DataSaver.LoadData();
+		log.info("Plugin has been successfully reloaded.");
 	}
-	
 	public static String strSade(String str) {
 		char trueChars[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's' , 't', 'y', 'u', 'v', 'y', 'z', 'x' , 'q'};
 		String ret = "";

@@ -1,16 +1,16 @@
 #*****************************************************************************************#
-# --¬   --¬--¬------¬ --------¬--¬   --¬ -----¬ --¬     -------¬--¬  --¬ ------¬ ------¬  #
-# --¦   --¦--¦---==--¬L==---==---¦   --¦---==--¬--¦     ---====---¦  --¦---===--¬---==--¬ #
-# --¦   --¦--¦--------   --¦   --¦   --¦-------¦--¦     -------¬-------¦--¦   --¦-------- #
-# L--¬ ------¦---==--¬   --¦   --¦   --¦---==--¦--¦     L====--¦---==--¦--¦   --¦---===-  #
-#  L------ --¦--¦  --¦   --¦   L----------¦  --¦-------¬-------¦--¦  --¦L----------¦      #
-#   L===-  L=-L=-  L=-   L=-    L=====- L=-  L=-L======-L======-L=-  L=- L=====- L=-      #
-#   *******************************************************************************       #
+#     ____   ____ __         __                __    _________ __                         #
+#     \   \_/   /|__|_______/  |_ __ _______  |  |  /   _____/|  |__   ____ ______        #
+#      \       / |  \_  __ \   __\  |  \__  \ |  |  \_____  \ |  |  \ /  _ \\  __ \       #
+#       \     /  |  ||  | \/|  | |  |  // __ \|  |__/        \|   |  (  |_| )  |_| |      #
+#        \___/   |__||__|   |__| |____/(______/____/_________/|___|__/\____/|   __/       #
+#                                                                           |__|          #
+#     *****************************************************************************       #
 #                                                                                         #
-#                      VirtualShop RELOADED - 1.0.6v - Pikod tarafýndan                   #
+#                                 VirtualShop - from Pikod                                #
 #                             https://wwww.youtube.com/c/pikod                            #
 #                                                                                         #
-#                  Bir açýklamayý silmek için config'den o bölümü kaldýr.                 #
+#                   If you want to remove the lore, delete from config.                   #
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # ------------------
@@ -29,9 +29,11 @@ noSellableItem: '&cEnvanterinde satýlabilir hiç eþya yok.'
 emptyHand: '&cElinde bir þey tutmalýsýn.'
 dontSellable: '&cElinde ki þey satýlabilir deðil.'
 noPermission: '&cGerekli yetkilere sahip deðilsin!'
+noPermissionCategory: '&cBurayý kullanmak için VIP olmalýsýn.'
 noConsole: '&cBu komudu konsoldan kullanamazsýn.'
 correctUsage: '&cDoðru kullaným: &f{USAGE}'
 cancelKeyword: 'iptal'
+nullKeyword: 'Yok'
 
 # ------------------------
 #  ADMIN PANEL - MESSAGES 
@@ -43,6 +45,7 @@ cannotBeAddItem: '&9VirtualShop &8&l» &cBuraya eþya ekleyemezsin!'
 successRemoved: '&9VirtualShop &8&l» &aBaþarýyla kaldýrýldý!'
 writeNewBuyCost: '&9VirtualShop &8&l» &aLütfen yeni alýþ deðerini girin! Eðer almayý kapatmak isterseniz "0" yazabilirsiniz. Ýptal etmek için "iptal" yazýn.'
 writeNewSellCost: '&9VirtualShop &8&l» &aLütfen yeni satýþ deðerini girin! Eðer satýþý kapatmak isterseniz "0" yazabilirsiniz. Ýptal etmek için "iptal" yazýn.'
+writePermission: '&9VirtualShop &8&l» &aLütfen yetkiyi yazýn. Ýptal etmek için &7"iptal"&a, yetkisiz hale getirmek için &7"yok" &ayazýn. '
 invalidNumber: '&9VirtualShop &8&l» &cHatalý bir sayý girdiniz. Tekrar deneyin veya "iptal" yazarak vazgeçin.'
 assigned: '&9VirtualShop &8&l» &aDeðer baþarýyla deðiþtirildi!'
 cancelled: '&9VirtualShop &8&l» &cVazgeçtiniz!'
@@ -78,7 +81,6 @@ previousPageLore:
 # Sell / Buy - Menu
 piecePrefix: '&aTanesi: &e'
 totalPrefix: '&aHepsi: &e'
-backToPrefix: '&cDön: &l'
 
 # ------------------
 #  GUI BUTTON NAMES 
@@ -150,6 +152,8 @@ editCategory_DeleteLore:
 editCategory_BackLore:
     - '&cÖnceki sayfaya geri'
     - '&cdönmek için týkla.'
+editCategory_PermissionLore:
+    - '&cYetki: &4{PERMISSION}'
     
 # Add Item Menu
 panelSellClosed: '&cDevredýþý'
@@ -185,6 +189,7 @@ mainMenu_Creators: '&e&lEklenti Yapýmcýsý'
 editCategory_IsDecoration: '&7Dekorasyon Olsun'
 editCategory_Delete: '&4Sil'
 editCategory_CategoryId: '&aKatagori ID'
+editCategory_Permission: '&7Yetki Belirle'
 editCategory_ItemCount: '&aEþya Sayýsý'
 editCategory_Back: '&4Geri Dön'
 

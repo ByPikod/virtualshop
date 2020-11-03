@@ -24,7 +24,7 @@ public class Seller {
 					for(String key1 : shop.getKeys(false)) {
 						ConfigurationSection item = shop.getConfigurationSection(key1);
 						String strCost = item.getString("sellCost");
-						long longCost = Long.valueOf(strCost);
+						double longCost = Double.valueOf(strCost);
 						if(longCost != 0) {
 							ItemStack i = new ItemStack(Material.matchMaterial(item.getString("item")));
 							i.setAmount(item.getInt("count"));

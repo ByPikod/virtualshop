@@ -17,6 +17,7 @@ import me.pikod.utils.f;
 
 public class GuiEditItem extends GuiManager {
 	public GuiEditItem(Player player, int item, int category) {
+		super(player);
 		this.create(1, f.autoLang("editItemTitle"));
 
 		YamlConfiguration lang = VirtualShop.lang;
@@ -43,7 +44,7 @@ public class GuiEditItem extends GuiManager {
 		ConfigurationSection shop = VirtualShop.shops.getConfigurationSection("categories."+category+".shop."+item);
 		
 		if(shop.isSet("lore")) {
-			for(String key : shop.getConfigurationSection("lore").getKeys(false)) {
+			for(String key : shop.getStringList("lore")) {
 				lore.add(shop.getString("lore."+key));
 			}
 			lore.add(Color.chat("&r"));
@@ -142,6 +143,6 @@ public class GuiEditItem extends GuiManager {
 		stackSize.setItemMeta(meta);
 		setItem(7, stackSize);
 		
-		player.openInventory(this.getInventory());
+		player.openInventory(gui);
 	}
 }

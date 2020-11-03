@@ -32,7 +32,7 @@ public class cmdMain implements CommandExecutor {
 						sender.sendMessage(Color.chat(f.autoLang("noConsole")));
 					}
 				}else if(args[0].toLowerCase().equals("reload")) {
-					VirtualShop.reloadShops(true);
+					VirtualShop.reloadShops();
 					sender.sendMessage(Color.chat(f.autoLang("successReloaded")));
 					return true;
 				}else if(args[0].toLowerCase().equals("help")) {

@@ -1,12 +1,34 @@
 package me.pikod.gui;
 
+import java.util.HashMap;
+
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 import me.pikod.utils.Color;
 
 public class GuiManager {
-	private Inventory gui = null;
+	public Inventory gui = null;
+
+	private static HashMap<Player, GuiManager> lastInventories = new HashMap<Player, GuiManager>();
+	private HashMap<String, Integer> inventoryData = new HashMap<String, Integer>();
+	
+	protected GuiManager(Player player) {
+		lastInventories.put(player, this);
+	}
+	
+	public void setData(String key, Integer data) {
+		inventoryData.put(key, data);
+	}
+	
+	public int getData(String key) {
+		return inventoryData.get(key);
+	}
+	
+	public static GuiManager getLastInventory(Player player) {
+		return lastInventories.get(player);
+	}
 	
 	public void create(int rows, String name) {
 		int slot = 9;
@@ -43,10 +65,6 @@ public class GuiManager {
 		if(gui != null) {
 			gui.setItem(slot, item);
 		}
-	}
-	
-	public Inventory getInventory() {
-		return this.gui;
 	}
 }
 

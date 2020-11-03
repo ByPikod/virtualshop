@@ -4,17 +4,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType.SlotType;
@@ -30,11 +29,15 @@ import me.pikod.gui.GuiCategoriesAdmin;
 import me.pikod.gui.GuiEditCategory;
 import me.pikod.gui.GuiEditItem;
 import me.pikod.gui.GuiItems;
-import me.pikod.gui.GuiLanguage;
+import me.pikod.gui.GuiManager;
 import me.pikod.gui.GuiSellOrBuy;
 import me.pikod.main.ChatEvent;
 import me.pikod.main.ChatInterface;
 import me.pikod.main.VirtualShop;
+import me.pikod.main.data.DataCategory;
+import me.pikod.main.data.DataItem;
+import me.pikod.main.data.DataPage;
+import me.pikod.main.data.DataSaver;
 import me.pikod.utils.Color;
 import me.pikod.utils.f;
 import net.milkbowl.vault.economy.Economy;
@@ -42,8 +45,7 @@ import net.milkbowl.vault.economy.Economy;
 public class ActionHandler implements Listener {
 	
 	public static List<ChatEvent> chatListenerList = new ArrayList<ChatEvent>();
-	
-	
+
 	public ActionHandler(VirtualShop plugin) {
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
@@ -70,23 +72,24 @@ public class ActionHandler implements Listener {
 			event.getWhoClicked().sendMessage(event.getAction().toString()+":"+event.getRawSlot()+" - Normal slot: "+event.getSlot()+" Slot type: "+event.getSlotType().toString());
 		}
 		Player player = (Player) event.getWhoClicked();
-		if(event.getView().getTitle().equals(Color.chat(f.autoLang("adminMainMenuTitle")))) { //ANA ADMIN MENUSU
+		if(event.getView().getTitle().equals(f.autoLang("adminMainMenuTitle"))) { //ANA ADMIN MENUSU
 			event.setCancelled(true);
+			
 			if(event.getSlot() == 4) {
 				player.closeInventory();
 				new GuiCategoriesAdmin(player);
 			}else if(event.getSlot() == 0) {
 				player.closeInventory();
-				VirtualShop.reloadShops(true);
+				VirtualShop.reloadShops();
 				player.sendMessage(Color.chat(f.autoLang("successReloaded")));
 			}else if(event.getSlot() == 8) {
-				player.sendMessage(Color.chat("&9"+GuiLanguage.bar));
+				player.sendMessage(Color.chat("&9#################################"));
 				player.sendMessage(Color.chat("&9"));
 				player.sendMessage(Color.chat("&9-> &2Created by, &aPikod"));
 				player.sendMessage(Color.chat("&9-> &2Discord: &ahttps://discord.gg/dkbNmFJ"));
 				player.sendMessage(Color.chat("&9-> &2Youtube: &ahttps://www.youtube.com/c/pikod"));
 				player.sendMessage(Color.chat("&9"));
-				player.sendMessage(Color.chat("&9"+GuiLanguage.bar));
+				player.sendMessage(Color.chat("&9#################################"));
 				player.closeInventory();
 			}
 		}else if(event.getView().getTitle().equals(Color.chat(f.autoLang("editCategoriesTitle")))) { //KATEGORI DUZENLEME MENUSU
@@ -123,14 +126,7 @@ public class ActionHandler implements Listener {
 				event.setCursor(null);
 				
 				
-				
-				VirtualShop.shops.createSection("categories."+event.getSlot());
-				VirtualShop.shops.set("categories."+event.getSlot()+".item", item.getType().toString());
-				VirtualShop.shops.set("categories."+event.getSlot()+".displayName", meta.getDisplayName());
-				VirtualShop.shops.set("categories."+event.getSlot()+".subID", item.getDurability());
-				VirtualShop.shops.set("categories."+event.getSlot()+".meta", item.getData().getData());
-				VirtualShop.saveShops();
-				VirtualShop.reloadShops();
+				DataSaver.createCategory(item.getType(), meta.getDisplayName(), item.getDurability(), event.getSlot());
 				
 			}else if(event.getAction() == InventoryAction.PICKUP_ALL || event.getAction() == InventoryAction.PICKUP_HALF || event.getAction() == InventoryAction.PICKUP_ONE || event.getAction() == InventoryAction.PICKUP_SOME){
 				if(event.getSlotType() == SlotType.QUICKBAR) return;
@@ -144,12 +140,12 @@ public class ActionHandler implements Listener {
 			}else {
 				event.setCancelled(true);
 			}
-		}else if(event.getView().getTitle().equals(Color.chat(f.autoLang("editCategoryTitle")))) {
+		}else if(event.getView().getTitle().equals(f.autoLang("editCategoryTitle"))) {
 			if(event.getSlotType() == SlotType.QUICKBAR) return;
 			String slot;
 			ItemStack item = event.getInventory().getItem(3);
 			slot = item.getItemMeta().getLore().get(0);
-			
+			DataCategory category = DataSaver.getCategory(Integer.parseInt(slot));
 			
 			event.setCancelled(true);
 			if(!event.isLeftClick() && !event.isRightClick()) return;
@@ -157,17 +153,59 @@ public class ActionHandler implements Listener {
 				new GuiCategoriesAdmin(player);
 			}
 			
+			if(event.getSlot() == 1) {
+				player.closeInventory();
+				player.sendMessage(f.autoLang("writePermission"));
+				new ChatEvent(player, new ChatInterface() {
+					
+					@Override
+					public boolean chatAction(AsyncPlayerChatEvent event) {
+						event.setCancelled(true);
+						if(event.getMessage().toLowerCase().equals(f.autoLang("cancelKeyword"))) {
+							Bukkit.getScheduler().scheduleSyncDelayedTask(VirtualShop.plugin, new Runnable() {
+								@Override
+								public void run() {
+									new GuiEditCategory(event.getPlayer(), Short.parseShort(slot));
+								}
+							});
+							event.getPlayer().sendMessage(f.autoLang("cancelled"));
+							return true;
+						}
+							
+						if(event.getMessage().toLowerCase().equals(f.autoLang("nullKeyword").toLowerCase())) {
+							category.setPermission(null);
+							event.getPlayer().sendMessage(f.autoLang("assigned"));
+							Bukkit.getScheduler().scheduleSyncDelayedTask(VirtualShop.plugin, new Runnable() {
+								@Override
+								public void run() {
+									new GuiEditCategory(event.getPlayer(), Short.parseShort(slot));
+								}
+							});
+							return true;
+						}
+						event.getPlayer().sendMessage(f.autoLang("assigned"));
+						category.setPermission(event.getMessage());
+						Bukkit.getScheduler().scheduleSyncDelayedTask(VirtualShop.plugin, new Runnable() {
+							@Override
+							public void run() {
+								new GuiEditCategory(event.getPlayer(), Short.parseShort(slot));
+							}
+						});
+						
+						return true;
+					}
+				});
+			}
+			
 			if(event.getSlot() == 8) {
-				VirtualShop.shops.set("categories."+slot, null);
-				VirtualShop.saveShops();
-				VirtualShop.reloadShops();
+				category.deleteCategory();
 				player.sendMessage(f.autoLang("successRemoved"));
 				new GuiCategoriesAdmin(player);
 			}
 			
 			if(event.getSlot() == 7) {
 				if(event.getCurrentItem().getItemMeta().getLore().get(0).equals(f.autoLang("decorationEnabled"))) {
-					VirtualShop.shops.set("categories."+slot+".decoration", false);
+					category.setDecoration(false);
 					item = VirtualShop.getStainedGlassItem("RED", 14);
 					ItemMeta meta =  item.getItemMeta();
 					meta.setDisplayName(f.autoLang("editCategory_IsDecoration"));
@@ -175,15 +213,14 @@ public class ActionHandler implements Listener {
 					item.setItemMeta(meta);
 					event.getInventory().setItem(event.getSlot(), item);
 				}else {
-					VirtualShop.shops.set("categories."+slot+".decoration", true);
+					category.setDecoration(true);
 					item = VirtualShop.getStainedGlassItem("LIME",5);
 					ItemMeta meta = item.getItemMeta();
-					meta.setDisplayName(f.autoLang("isDecoration"));
+					meta.setDisplayName(f.autoLang("editCategory_IsDecoration"));
 					meta.setLore(Arrays.asList(f.autoLang("decorationEnabled")));
 					item.setItemMeta(meta);
 					event.getInventory().setItem(event.getSlot(), item);
 				}
-				VirtualShop.saveShops();
 			}
 		}else if(event.getView().getTitle().equals(Color.chat(f.autoLang("addItemToCategoryTitle")))) {
 			if(event.getSlotType() == SlotType.QUICKBAR) return;
@@ -203,38 +240,9 @@ public class ActionHandler implements Listener {
 					return;
 				}
 				ItemStack item = event.getCursor();
-				
-				if(VirtualShop.shops.getConfigurationSection("categories."+Integer.parseInt(event.getInventory().getItem(48).getItemMeta().getLore().get(0))+".shop."+location) == null) {
-					VirtualShop.shops.createSection("categories."+Integer.parseInt(event.getInventory().getItem(48).getItemMeta().getLore().get(0))+".shop."+location);
-				}
-				
-				ConfigurationSection shop = VirtualShop.shops.getConfigurationSection("categories."+Integer.parseInt(event.getInventory().getItem(48).getItemMeta().getLore().get(0))+".shop."+location);
-				
-				shop.set("item", item.getType().toString());
-				shop.set("subId", item.getDurability());
-				shop.set("count", item.getAmount());
-				shop.set("buyCost", "1000");
-				shop.set("sellCost", "0");
-				
-				int i = 0;
-				
-				if(item.getItemMeta().hasLore()) {
-					Iterator<String> iteratorLore = item.getItemMeta().getLore().iterator();
-					while(iteratorLore.hasNext()) {
-						i++;
-						shop.set("lore."+i, iteratorLore.next());
-					}
-				}
-				
-				for(Map.Entry<Enchantment, Integer> entry : item.getEnchantments().entrySet()) {
-					shop.set("ench."+entry.getKey().getName(), item.getEnchantmentLevel(entry.getKey()));
-				}
-				
-				if(item.getItemMeta().hasDisplayName()) {
-					shop.set("displayName", item.getItemMeta().getDisplayName());
-				}
-				
-				VirtualShop.saveShops();
+				int category = Integer.parseInt(event.getInventory().getItem(48).getItemMeta().getLore().get(0));
+				DataCategory c = DataSaver.getCategory(category);
+				DataSaver.createItem(c, item, location, 1000, 0);
 				
 				ItemMeta meta = item.getItemMeta();
 				List<String> lore = new ArrayList<String>();
@@ -246,8 +254,6 @@ public class ActionHandler implements Listener {
 					}
 					lore.add(Color.chat("&r"));
 				}
-				
-				
 				if(VirtualShop.lang.isSet("panelItemLore")) {
 					for(String key : VirtualShop.lang.getStringList("panelItemLore")) {
 						lore.add(f.c(key.replace("{BUY_COST}", "1000").replace("{SELL_COST}", f.autoLang("sellClosed"))));
@@ -258,8 +264,6 @@ public class ActionHandler implements Listener {
 				event.getInventory().setItem(event.getSlot(), item);
 				
 				event.setCursor(null);
-				
-				VirtualShop.reloadShops();
 			}else if(event.getAction() == InventoryAction.PICKUP_ALL || event.getAction() == InventoryAction.PICKUP_HALF || event.getAction() == InventoryAction.PICKUP_ONE || event.getAction() == InventoryAction.PICKUP_SOME) {
 				if(event.getSlotType() == SlotType.QUICKBAR) return;
 				if(event.isRightClick() || event.isLeftClick() || event.isShiftClick()) {
@@ -281,7 +285,7 @@ public class ActionHandler implements Listener {
 		}else if(event.getView().getTitle().equals(f.autoLang("editItemTitle"))) {
 			if(event.getSlotType() == SlotType.QUICKBAR) return;
 			event.setCancelled(true);
-			if(event.isRightClick() || event.isLeftClick() || event.isShiftClick()) {
+			if(event.getClick() == ClickType.LEFT || event.getClick() == ClickType.RIGHT) {
 				int lanes = event.getInventory().getItem(4).getItemMeta().getLore().size();
 				int lane1 = lanes-1;
 				int lane2 = lanes-2;
@@ -292,14 +296,15 @@ public class ActionHandler implements Listener {
 
 				int page = 1;
 				page = ((itemId-1)/45)+1;
+				DataCategory category = DataSaver.getCategory(categoryId);
+				DataPage p = category.getPage(page);
+				DataItem item = p.getItemFromId(itemId);
 				
 				if(event.getSlot() == 0) {
 					new GuiAddItem(player, page ,(short) categoryId);
 				}
 				if(event.getSlot() == 8) {
-					VirtualShop.shops.set("categories."+categoryId+".shop."+itemId, null);
-					VirtualShop.saveShops();
-					VirtualShop.reloadShops();
+					item.deleteItem();
 					player.sendMessage(f.autoLang("successRemoved"));
 					new GuiAddItem(player, page, categoryId);
 				}
@@ -316,7 +321,7 @@ public class ActionHandler implements Listener {
 						}
 						meta.setLore(lore);
 						current.setItemMeta(meta);
-						VirtualShop.shops.set("categories."+categoryId+".shop."+itemId+".stackSize", 16);
+						item.setStackSize(16);	
 					}else
 					if(current.getAmount() == 16) {
 						current.setAmount(32);
@@ -328,7 +333,7 @@ public class ActionHandler implements Listener {
 						}
 						meta.setLore(lore);
 						current.setItemMeta(meta);
-						VirtualShop.shops.set("categories."+categoryId+".shop."+itemId+".stackSize", 32);
+						item.setStackSize(32);	
 					}else
 					if(current.getAmount() == 32) {
 						current.setAmount(64);
@@ -340,7 +345,7 @@ public class ActionHandler implements Listener {
 						}
 						meta.setLore(lore);
 						current.setItemMeta(meta);
-						VirtualShop.shops.set("categories."+categoryId+".shop."+itemId+".stackSize", 64);
+						item.setStackSize(64);	
 					}else
 					if(current.getAmount() == 64) {
 						current.setAmount(1);
@@ -352,10 +357,8 @@ public class ActionHandler implements Listener {
 						}
 						meta.setLore(lore);
 						current.setItemMeta(meta);
-						VirtualShop.shops.set("categories."+categoryId+".shop."+itemId+".stackSize", 1);
+						item.setStackSize(1);	
 					}
-					VirtualShop.saveShops();
-					VirtualShop.reloadShops();
 				}
 				
 				if(event.getSlot() == 3) {
@@ -367,22 +370,24 @@ public class ActionHandler implements Listener {
 						public boolean chatAction(AsyncPlayerChatEvent event) {
 							event.setCancelled(true);
 							try {
-								Double.valueOf(event.getMessage());
+								Double.parseDouble(event.getMessage());
 							}catch(Exception e) {
 								if(event.getMessage().toLowerCase().equals(f.autoLang("cancelKeywordAdmin").toLowerCase())) {
 									event.getPlayer().sendMessage(f.autoLang("cancelled"));
-									new GuiEditItem(player, itemId, categoryId);
+									Bukkit.getScheduler().scheduleSyncDelayedTask(VirtualShop.plugin, new Runnable() {
+										@Override
+										public void run() {
+											new GuiEditItem(player, itemId, categoryId);
+										}
+									});
 									return true;
 								}
 								event.getPlayer().sendMessage(f.autoLang("invalidNumber"));
 								return false;
 							}
-							VirtualShop.shops.set("categories."+categoryId+".shop."+itemId+".buyCost", ""+Double.valueOf(event.getMessage()));
-							VirtualShop.saveShops();
-							VirtualShop.reloadShops();
+							item.setBuyCost(Double.parseDouble(event.getMessage()));
 							event.getPlayer().sendMessage(f.autoLang("assigned"));
 							Bukkit.getScheduler().scheduleSyncDelayedTask(VirtualShop.plugin, new Runnable() {
-								
 								@Override
 								public void run() {
 									new GuiEditItem(player, itemId, categoryId);
@@ -402,19 +407,22 @@ public class ActionHandler implements Listener {
 						public boolean chatAction(AsyncPlayerChatEvent event) {
 							event.setCancelled(true);
 							try {
-								Double.valueOf(event.getMessage());
+								Double.parseDouble(event.getMessage());
 							}catch(Exception e) {
 								if(event.getMessage().equals(f.autoLang("cancelKeywordAdmin").toLowerCase())) {
 									event.getPlayer().sendMessage(f.autoLang("cancelled"));
-									new GuiEditItem(player, itemId, categoryId);
+									Bukkit.getScheduler().scheduleSyncDelayedTask(VirtualShop.plugin, new Runnable() {
+										@Override
+										public void run() {
+											new GuiEditItem(player, itemId, categoryId);
+										}
+									});
 									return true;
 								}
 								event.getPlayer().sendMessage(f.autoLang("invalidNumber"));
 								return false;
 							}
-							VirtualShop.shops.set("categories."+categoryId+".shop."+itemId+".sellCost", ""+Double.valueOf(event.getMessage()));
-							VirtualShop.saveShops();
-							VirtualShop.reloadShops(true);
+							item.setSellCost(Double.parseDouble(event.getMessage()));
 							event.getPlayer().sendMessage(f.autoLang("assigned"));
 							Bukkit.getScheduler().scheduleSyncDelayedTask(VirtualShop.plugin, new Runnable() {
 								
@@ -435,9 +443,15 @@ public class ActionHandler implements Listener {
 				return;
 			}
 			if(VirtualShop.shops.getConfigurationSection("categories."+event.getSlot()) != null && VirtualShop.shops.getBoolean("categories."+event.getSlot()+".decoration") != true) { //Eðer basýlan item'e ait veri varsa.
+				ConfigurationSection shop = VirtualShop.shops.getConfigurationSection("categories."+event.getSlot());
+				if(shop.isSet("permission")) {
+					if(player.hasPermission(shop.getString("permission"))) {
+						new GuiItems(player, 1, event.getSlot());
+					}else player.sendMessage(f.autoLang("noPermissionCategory"));
+				}else
 				new GuiItems(player, 1, event.getSlot());
 			}
-		}else if(event.getView().getTitle().equals(Color.chat(GuiLanguage.getStr("sellItemTitle"))) || event.getView().getTitle().equals(Color.chat(GuiLanguage.getStr("buyItemTitle")))) {
+		}else if(event.getView().getTitle().equals(f.autoLang("sellItemTitle")) || event.getView().getTitle().equals(f.autoLang("buyItemTitle"))) {
 			event.setCancelled(true);
 			if(event.getAction() == InventoryAction.NOTHING) return;
 			if(event.getSlotType() == SlotType.QUICKBAR) return;
@@ -447,12 +461,9 @@ public class ActionHandler implements Listener {
 			
 			if(event.getSlot() == 26) {
 				int page, category;
-				ItemStack item = event.getInventory().getItem(26);
-				String info = item.getItemMeta().getLore().get(0);
-				info = info.substring(GuiLanguage.getStr("backToPrefix").length());
-				String[] splitted = info.split("-");
-				category = Integer.parseInt(splitted[0]);
-				page = Integer.parseInt(splitted[1]);
+				GuiManager gui = GuiManager.getLastInventory(player);
+				category = gui.getData("category");
+				page = gui.getData("page");
 				new GuiItems(player, page, category); //Ana sayfaya döndür.
 				return;
 			}
@@ -465,8 +476,8 @@ public class ActionHandler implements Listener {
 				List<String> lore = getMoney.getItemMeta().getLore();
 				int h = lore.size();
 				String pieceCost = lore.get(h-2);
-				int piece = Integer.parseInt(pieceCost.substring(f.autoLang("piecePrefix").length()).replace(",", ""));
-				long total = piece*totalAmount;
+				double piece = Double.parseDouble(pieceCost.substring(f.autoLang("piecePrefix").length()).replace(",", ""));
+				double total = piece*totalAmount;
 				int amountBackup = totalAmount;
 				
 				Inventory playerInventory = event.getWhoClicked().getInventory();
@@ -477,7 +488,7 @@ public class ActionHandler implements Listener {
 				HumanEntity he = event.getWhoClicked();
 				double money = eco.getBalance(p);
 				
-				if(event.getView().getTitle().equals(Color.chat(GuiLanguage.getStr("sellItemTitle")))) {
+				if(event.getView().getTitle().equals(f.autoLang("sellItemTitle"))) {
 					int selled = 0;
 					for(int i = 0; i < playerInventory.getSize(); i++) {
 						if(totalAmount == 0) continue;
@@ -529,11 +540,11 @@ public class ActionHandler implements Listener {
 						
 					}
 					if(selled == 0) {
-						he.sendMessage(Color.chat(GuiLanguage.getStr("notEnoughItem")));
+						he.sendMessage(f.autoLang("notEnoughItem"));
 					}else {
-						long m = selled*piece;
+						double m = selled*piece;
 						eco.depositPlayer(p, m);
-						String msg = Color.chat(GuiLanguage.getStr("successSell"));
+						String msg = f.autoLang("successSell");
 						msg = msg.replace("{ITEM}", verilecekItem.getType().toString());
 						msg = msg.replace("{MONEY}", VirtualShop.numberToStr(m));
 						msg = msg.replace("{STACK}", String.valueOf(selled));
@@ -541,7 +552,7 @@ public class ActionHandler implements Listener {
 					}
 				}else {
 					if(!(money >= total)) {
-						he.sendMessage(Color.chat(GuiLanguage.getStr("notEnoughMoney")));
+						he.sendMessage(f.autoLang("notEnoughMoney"));
 						return;
 					}
 					eco.withdrawPlayer(p, total);
@@ -558,7 +569,7 @@ public class ActionHandler implements Listener {
 						ver.setAmount(totalAmount);
 						playerInventory.addItem(ver);
 					}
-					String msg = Color.chat(GuiLanguage.getStr("successBuy"));
+					String msg = f.autoLang("successBuy");
 					msg = msg.replace("{ITEM}", verilecekItem.getType().toString());
 					msg = msg.replace("{MONEY}", String.valueOf(VirtualShop.numberToStr(total)));
 					msg = msg.replace("{STACK}", String.valueOf(amountBackup));
@@ -571,16 +582,20 @@ public class ActionHandler implements Listener {
 			if(event.getSlot() == 3) {
 				GuiSellOrBuy.Remove(event.getInventory(), 1);
 			}
+			Material demir_parmaklik = Material.matchMaterial("IRON_FENCE");
+			if(demir_parmaklik == null) {
+				demir_parmaklik = Material.matchMaterial("IRON_BARS");
+			}
 			if(event.getSlot() == 2) {
-				if(event.getCurrentItem().getType() != Material.IRON_FENCE)
+				if(event.getCurrentItem().getType() != demir_parmaklik)
 				GuiSellOrBuy.Remove(event.getInventory(), 16);
 			}
 			if(event.getSlot() == 1) {
-				if(event.getCurrentItem().getType() != Material.IRON_FENCE)
+				if(event.getCurrentItem().getType() != demir_parmaklik)
 				GuiSellOrBuy.Remove(event.getInventory(), 32);
 			}
 			if(event.getSlot() == 0) {
-				if(event.getCurrentItem().getType() != Material.IRON_FENCE)
+				if(event.getCurrentItem().getType() != demir_parmaklik)
 				GuiSellOrBuy.Remove(event.getInventory(), 64);
 			}
 			
@@ -588,15 +603,15 @@ public class ActionHandler implements Listener {
 				GuiSellOrBuy.Add(event.getInventory(), 1);
 			}
 			if(event.getSlot() == 6) {
-				if(event.getCurrentItem().getType() != Material.IRON_FENCE)
+				if(event.getCurrentItem().getType() != demir_parmaklik)
 				GuiSellOrBuy.Add(event.getInventory(), 16);
 			}
 			if(event.getSlot() == 7) {
-				if(event.getCurrentItem().getType() != Material.IRON_FENCE)
+				if(event.getCurrentItem().getType() != demir_parmaklik)
 				GuiSellOrBuy.Add(event.getInventory(), 32);
 			}
 			if(event.getSlot() == 8) {
-				if(event.getCurrentItem().getType() != Material.IRON_FENCE)
+				if(event.getCurrentItem().getType() != demir_parmaklik)
 				GuiSellOrBuy.Add(event.getInventory(), 64);
 			}
 		}else if(event.getView().getTitle().equals(f.autoLang("itemsTitle"))) { /** IN CATEGORY **/
@@ -644,18 +659,18 @@ public class ActionHandler implements Listener {
 			page = event.getInventory().getItem(49).getAmount();
 			if(shop != null) {
 
-				double buyCost = Double.valueOf(shop.getString("buyCost"));
-				double sellCost = Double.valueOf(shop.getString("sellCost"));
+				double buyCost = Double.parseDouble(shop.getString("buyCost"));
+				double sellCost = Double.parseDouble(shop.getString("sellCost"));
 				if(event.isLeftClick()) {
 					if(buyCost == 0) {
-						player.sendMessage(Color.chat(GuiLanguage.getStr("closedBuy")));
+						player.sendMessage(f.autoLang("closedBuy"));
 						return;
 					}
 					new GuiSellOrBuy(player, true, event.getCurrentItem(), buyCost, categoryId, page, shop);
 				}
 				if(event.isRightClick()) {
 					if(sellCost == 0) {
-						player.sendMessage(Color.chat(GuiLanguage.getStr("closedSell")));
+						player.sendMessage(f.autoLang("closedSell"));
 						return;
 					}
 					new GuiSellOrBuy(player, false, event.getCurrentItem(), sellCost, categoryId, page, shop);

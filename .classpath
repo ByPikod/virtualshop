@@ -2,7 +2,8 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/Users/musta/Documents/Minecraft15Correct.jar"/>
+	<classpathentry kind="lib" path="C:/Users/musta/Documents/MinecraftServer.jar"/>
 	<classpathentry kind="lib" path="Vault.jar"/>
+	<classpathentry kind="lib" path="C:/Users/musta/Documents/MinecraftServer14.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

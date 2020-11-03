@@ -6,17 +6,21 @@ import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import me.pikod.main.VirtualShop;
+import me.pikod.main.data.DataCategory;
+import me.pikod.main.data.DataItem;
+import me.pikod.main.data.DataPage;
+import me.pikod.main.data.DataSaver;
 import me.pikod.utils.Color;
 import me.pikod.utils.f;
 
 public class GuiItems extends GuiManager {
 	public GuiItems(Player player, int page, int category) {
+		super(player);
 		this.create(6, f.autoLang("itemsTitle"));
 		List<String> lore = new ArrayList<String>();
 		ItemMeta meta;
@@ -75,65 +79,15 @@ public class GuiItems extends GuiManager {
 			this.setItem(53, ileri);
 		}	
 		
-		int baslangic, bitis;
+		DataCategory c = DataSaver.getCategory(category);
+		DataPage p = c.getPages().get(page);
 		int sizeOfPreviousPages = ((page-1) * 45);
-		baslangic = sizeOfPreviousPages+1;
-		bitis = sizeOfPreviousPages+45;
-		
-		for(int i = baslangic; i <= bitis; i++) {
-			ConfigurationSection shop = VirtualShop.shops.getConfigurationSection("categories."+category+".shop."+i);
-			if(shop != null) {
-				ItemStack item = new ItemStack(Material.matchMaterial(shop.getString("item")), shop.getInt("count"));
-				item.setDurability((short) shop.getInt("subId"));
-				meta = item.getItemMeta();
-				lore.clear();
-				String buyCost = shop.getString("buyCost");
-				String sellCost = shop.getString("sellCost");
-				
-				String strBuy = VirtualShop.numberToStr(Double.valueOf(buyCost));
-				String strSell = VirtualShop.numberToStr(Double.valueOf(sellCost));
-				
-				if(shop.isSet("lore")) {
-					for(String key : shop.getConfigurationSection("lore").getKeys(false)) {
-						lore.add(shop.getString("lore."+key));
-					}
-					lore.add(Color.chat("&r"));
-					meta.setLore(lore);
-				}
-				
-				
-				if(strBuy.equals("0")) {
-					strBuy = f.autoLang("buyClosed");
-				}
-				if(strSell.equals("0")) {
-					strSell = f.autoLang("sellClosed");
-				}
-				if(lang.isSet("itemLore")) {
-					for(String key : lang.getStringList("itemLore")) {
-						lore.add(f.c(key.replace("{BUY_COST}", strBuy).replace("{SELL_COST}", strSell)));
-					}
-				}
-				
-				meta.setLore(lore);
-				
-				if(shop.isSet("displayName")) {
-					meta.setDisplayName(shop.getString("displayName"));
-				}
-				
-				
-				item.setItemMeta(meta);
-				
-				if(shop.isSet("ench")) {
-					for(String ench : shop.getConfigurationSection("ench").getKeys(false)) {
-						Enchantment enchObj = Enchantment.getByName(ench);
-						item.addUnsafeEnchantment(enchObj, shop.getInt("ench."+ench));
-					}
-				}
-				
-				this.setItem((i-sizeOfPreviousPages)-1, item);
+		if(p != null) {
+			for(DataItem item : p.getItems()) {
+				this.setItem((item.getSlot()-sizeOfPreviousPages)-1, item.getUserView());
 			}
-			player.openInventory(this.getInventory());
-		}
+		}	
+		player.openInventory(gui);
 	}
 	
 	public static int getMaxPage(int category) {

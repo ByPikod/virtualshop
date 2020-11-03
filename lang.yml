@@ -1,13 +1,13 @@
 #*****************************************************************************************#
-# --¬   --¬--¬------¬ --------¬--¬   --¬ -----¬ --¬     -------¬--¬  --¬ ------¬ ------¬  #
-# --¦   --¦--¦---==--¬L==---==---¦   --¦---==--¬--¦     ---====---¦  --¦---===--¬---==--¬ #
-# --¦   --¦--¦--------   --¦   --¦   --¦-------¦--¦     -------¬-------¦--¦   --¦-------- #
-# L--¬ ------¦---==--¬   --¦   --¦   --¦---==--¦--¦     L====--¦---==--¦--¦   --¦---===-  #
-#  L------ --¦--¦  --¦   --¦   L----------¦  --¦-------¬-------¦--¦  --¦L----------¦      #
-#   L===-  L=-L=-  L=-   L=-    L=====- L=-  L=-L======-L======-L=-  L=- L=====- L=-      #
-#   *******************************************************************************       #
+#     ____   ____ __         __                __    _________ __                         #
+#     \   \_/   /|__|_______/  |_ __ _______  |  |  /   _____/|  |__   ____ ______        #
+#      \       / |  \_  __ \   __\  |  \__  \ |  |  \_____  \ |  |  \ /  _ \\  __ \       #
+#       \     /  |  ||  | \/|  | |  |  // __ \|  |__/        \|   |  (  |_| )  |_| |      #
+#        \___/   |__||__|   |__| |____/(______/____/_________/|___|__/\____/|   __/       #
+#                                                                           |__|          #
+#     *****************************************************************************       #
 #                                                                                         #
-#                       VirtualShop RELOADED - 1.0.6v - from Pikod                        #
+#                                 VirtualShop - from Pikod                                #
 #                             https://wwww.youtube.com/c/pikod                            #
 #                                                                                         #
 #                   If you want to remove the lore, delete from config.                   #
@@ -29,9 +29,11 @@ noSellableItem: '&cThere are no salable items in your inventory.'
 emptyHand: '&cYou must have something in your hand.'
 dontSellable: '&cThe item in your hand cannot be sold.'
 noPermission: '&cYou don''t have permission!'
+noPermissionCategory: '&cYou should be VIP for use there.'
 noConsole: '&cYou can''t use this command from console.'
 correctUsage: '&cCorrect usage: &f{USAGE}'
 cancelKeyword: 'cancel'
+nullKeyword: 'Null'
 
 # ------------------------
 #  ADMIN PANEL - MESSAGES 
@@ -43,6 +45,7 @@ cannotBeAddItem: '&9VirtualShop &8&l» &cCannot be add item to here!'
 successRemoved: '&9VirtualShop &8&l» &aSuccessfully removed!'
 writeNewBuyCost: '&9VirtualShop &8&l» &aPlease write a new buy cost! If you want to disable buying, write "0". If you want to cancel write "cancel".'
 writeNewSellCost: '&9VirtualShop &8&l» &aPlease write a new sell cost! If you want to disable selling, write "0". If you want to cancel write "cancel".'
+writePermission: '&9VirtualShop &8&l» &aPlease write permission. Write &7"cancel" &ato cancel. Write &7"null" &ato undefine.'
 invalidNumber: '&9VirtualShop &8&l» &cThe input you entered is not a valid number. Please try again or cancel.'
 assigned: '&9VirtualShop &8&l» &aSuccessfully assigned new variable!'
 cancelled: '&cCancelled!'
@@ -78,7 +81,6 @@ previousPageLore:
 # Sell / Buy - Menu
 piecePrefix: '&aPiece: &e'
 totalPrefix: '&aTotal: &e'
-backToPrefix: '&cTo: &l'
 
 # ------------------
 #  GUI BUTTON NAMES 
@@ -149,6 +151,8 @@ editCategory_DeleteLore:
 editCategory_BackLore:
     - '&cClick for back'
     - '&cto previous menu.'
+editCategory_PermissionLore:
+    - '&cPerm: &4{PERMISSION}'
     
 # Add Item Menu
 panelSellClosed: '&cDisabled'
@@ -184,6 +188,7 @@ mainMenu_Creators: '&e&lPlugin Creators'
 editCategory_IsDecoration: '&7Make Decoration'
 editCategory_Delete: '&4Delete'
 editCategory_CategoryId: '&aCategory Id'
+editCategory_Permission: '&7Set Permission'
 editCategory_ItemCount: '&aItem Count'
 editCategory_Back: '&4Back'
 

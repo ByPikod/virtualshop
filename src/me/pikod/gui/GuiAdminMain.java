@@ -14,6 +14,7 @@ import me.pikod.utils.f;
 
 public class GuiAdminMain extends GuiManager {
 	public GuiAdminMain(Player player) {
+		super(player);
 		this.create(1, f.autoLang("adminMainMenuTitle"));
 		
 		ItemStack reloadPlugin = new ItemStack(Material.BEACON);
@@ -68,6 +69,6 @@ public class GuiAdminMain extends GuiManager {
 		this.setItem(4, categories);
 		this.setItem(0, reloadPlugin);
 		
-		player.openInventory(this.getInventory());
+		player.openInventory(this.gui);
 	}
 }

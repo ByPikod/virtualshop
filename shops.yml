@@ -4,11 +4,4 @@ categories:
     displayName: '&cI LOVE VIRTUALSHOP USERS'
     subID: 0
     meta: 0
-    decoration: false
-    shop:
-      '4':
-        item: STONE
-        subId: 0
-        count: 64
-        buyCost: '1000'
-        sellCost: '0'
+    decoration: true

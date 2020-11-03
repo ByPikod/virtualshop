@@ -11,14 +11,18 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import me.pikod.main.VirtualShop;
+import me.pikod.main.data.DataCategory;
+import me.pikod.main.data.DataSaver;
 import me.pikod.utils.Color;
 import me.pikod.utils.f;
 
 public class GuiEditCategory extends GuiManager {
 	public GuiEditCategory(Player player, short categorySlot) {
+		super(player);
 		this.create(1, f.autoLang("editCategoryTitle"));
 		YamlConfiguration lang = VirtualShop.lang;
 		ConfigurationSection s = VirtualShop.shops.getConfigurationSection("categories."+categorySlot);
+		DataCategory c = DataSaver.getCategory(categorySlot);
 		ItemStack item = new ItemStack(Material.matchMaterial(s.getString("item")), 1);
 		item.setDurability((short) VirtualShop.shops.getInt("categories."+categorySlot+".subID"));
 		ItemMeta meta = item.getItemMeta();
@@ -54,6 +58,24 @@ public class GuiEditCategory extends GuiManager {
 		slot.setItemMeta(meta);
 		
 		this.setItem(3, slot);
+		
+		ItemStack perm = new ItemStack(Material.ENDER_PEARL, 1);
+		meta = perm.getItemMeta();
+		meta.setDisplayName(f.autoLang("editCategory_Permission"));
+		lore.clear();
+		String perm1;
+		if(c.isPermission()) {
+			perm1 = c.getPermission();
+		}else perm1 = f.autoLang("nullKeyword");
+		if(lang.isSet("editCategory_BackLore")) {
+			for(String key : lang.getStringList("editCategory_PermissionLore")) {
+				lore.add(f.c(key.replace("{PERMISSION}", perm1)));
+			}
+		}
+		meta.setLore(lore);
+		perm.setItemMeta(meta);
+		
+		this.setItem(1, perm);
 		
 		ItemStack esyaSayisi = new ItemStack(Material.CHEST, 1);
 		meta = esyaSayisi.getItemMeta();
@@ -106,6 +128,6 @@ public class GuiEditCategory extends GuiManager {
 		
 		this.setItem(0, geri);
 		
-		player.openInventory(this.getInventory());
+		player.openInventory(gui);
 	}
 }
