@@ -34,7 +34,7 @@ public class Seller {
 							}
 							if(item.isSet("ench")) {
 								for(String key2 : item.getConfigurationSection("ench").getKeys(false)) {
-									i.addEnchantment(Enchantment.getByName(key2), item.getInt("ench."+key2));
+									i.addUnsafeEnchantment(Enchantment.getByName(key2), item.getInt("ench."+key2));
 								}
 							}
 							if(item.isSet("displayName")) {
