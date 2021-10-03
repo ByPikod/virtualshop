@@ -1,4 +1,4 @@
-# VirtualShop
+# VirtualShop (with MANY MANY GLITCHES)
 
 Merhaba arkadaşlar! Bu yazıda pluginin hangi adımlar izlenerek yapıldığını, komutları, permissionları görebilirsiniz! Umarım plugini beğenmişsinizdir. İyi incelemeler diliyorum <3
 
